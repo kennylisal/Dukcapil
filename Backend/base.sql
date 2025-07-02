@@ -1,0 +1,37 @@
+CREATE TABLE orang (
+    NIK VARCHAR(16) PRIMARY KEY,
+    nama VARCHAR(100),
+    DateOfBirth DATE,
+    Gender CHAR(1)
+);
+
+CREATE TABLE Akta_Kelahiran (
+    Akta_ID VARCHAR(20) PRIMARY KEY,
+    NIK VARCHAR(16) UNIQUE,
+    PlaceOfBirth VARCHAR(100),
+    FOREIGN KEY (NIK) REFERENCES Person(NIK)
+);
+
+CREATE TABLE KTP (
+    KTP_ID VARCHAR(20) PRIMARY KEY,
+    NIK VARCHAR(16) UNIQUE,
+    IssueDate DATE,
+    ExpirationDate DATE,
+    FOREIGN KEY (NIK) REFERENCES Person(NIK)
+);
+
+CREATE TABLE Kartu_Keluarga (
+    KK_ID VARCHAR(20) PRIMARY KEY,
+    CreationDate DATE,
+    Address VARCHAR(200)
+);
+
+CREATE TABLE Kartu_Keluarga_Member (
+    KK_ID VARCHAR(20),
+    NIK VARCHAR(16),
+    Role VARCHAR(20),
+    PRIMARY KEY (KK_ID, NIK),
+    FOREIGN KEY (KK_ID) REFERENCES Kartu_Keluarga(KK_ID),
+    FOREIGN KEY (NIK) REFERENCES Person(NIK),
+    UNIQUE (NIK)
+);

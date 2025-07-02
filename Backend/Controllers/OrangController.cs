@@ -1,0 +1,140 @@
+using System;
+using System.Threading.Tasks;
+using AutoMapper;
+using Backend.DTO;
+using Backend.Interfaces;
+using Backend.Models;
+using Bogus;
+using CountryData;
+using CountryData.Bogus;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Backend.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class OrangController : Controller
+{
+    private readonly IOrangRepos _repos;
+    private readonly IMapper _mapper;
+
+    public OrangController(IOrangRepos orangRepos, IMapper mapper)
+    {
+        _repos = orangRepos;
+        _mapper = mapper;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
+    public async Task<ActionResult<ICollection<Orang>>> GetOrangs()
+    {
+        var orangs = await _repos.GetOrangs();
+        var result = _mapper.Map<List<OrangDTO>>(orangs);
+        return Ok(result);
+    }
+
+    [HttpGet("{nik}")]
+    [ProducesResponseType(200, Type = typeof(OrangDTO))]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult<Orang>> GetOrang(string nik)
+    {
+        var orang = await _repos.GetOrang(nik);
+        if (orang == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(_mapper.Map<OrangDTO>(orang));
+    }
+
+    [HttpGet("umur/{umur}")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
+    public async Task<ActionResult<ICollection<Orang>>> GetOrangDiatasUmur(int umur)
+    {
+        var list = await _repos.GetOrangsDiatasUmur(umur);
+        return Ok(_mapper.Map<List<OrangDTO>>(list));
+    }
+
+    [HttpGet("search/{search}")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
+    public async Task<ActionResult<ICollection<Orang>>> GetOrangsWithName(string search)
+    {
+        var orang = await _repos.GetOrangs(search);
+
+        return Ok(_mapper.Map<OrangDTO>(orang));
+    }
+
+    [HttpPost]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult> CreateOrang([FromBody] OrangDTO orangCreate)
+    {
+        if (CreateOrang == null)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var orangMap = _mapper.Map<Orang>(orangCreate);
+        var createResult = await _repos.CreateOrang(orangMap);
+
+        if (!createResult)
+        {
+            ModelState.AddModelError("", "Internal Error While Saving");
+            return StatusCode(500, ModelState);
+        }
+        return Ok("Success Create Orang");
+    }
+
+    [HttpPost("auto")]
+    [ProducesResponseType(200, Type = typeof(Orang))]
+    [ProducesResponseType(500)]
+    public async Task<ActionResult<Orang>> CreateOrangGenerated()
+    {
+        if (_repos == null)
+        {
+            Console.WriteLine("Repository is null!");
+            return StatusCode(500, "Repository not initialized.");
+        }
+        var seed = new Faker<Orang>("id_ID")
+            .RuleFor(o => o.Nik, f => f.Random.Replace("################"))
+            .RuleFor(o => o.Nama, f => f.Person.FullName)
+            .RuleFor(o => o.Tanggal_lahir, f => DateOnly.FromDateTime(f.Date.Past(60)))
+            .RuleFor(o => o.Tempat_lahir, f => f.Address.City())
+            .RuleFor(
+                o => o.Agama,
+                f => f.PickRandom("Katolik", "Kristen", "Islam", "Budha", "Hindu", "Konghucu")
+            )
+            .RuleFor(o => o.Kelamin, f => f.PickRandom('P', 'L'))
+            .RuleFor(o => o.Kewarganegaraan, Kewarganegaraan.WNI);
+        var res = seed.Generate();
+
+        var createResult = await _repos.CreateOrang(res);
+        if (!createResult)
+        {
+            ModelState.AddModelError("", "Internal Error While Saving");
+            return StatusCode(500, ModelState);
+        }
+        return Ok(res);
+    }
+
+    [HttpPost("percobaan")]
+    [ProducesResponseType(200, Type = typeof(Orang))]
+    [ProducesResponseType(500)]
+    public ActionResult<Orang> CreateOrangPercobaan()
+    {
+        var seed = new Faker<Orang>("id_ID")
+            .RuleFor(o => o.Nik, f => f.Random.Replace("################"))
+            .RuleFor(o => o.Nama, f => f.Person.FullName)
+            .RuleFor(o => o.Tanggal_lahir, f => DateOnly.FromDateTime(f.Date.Past(60)))
+            .RuleFor(o => o.Tempat_lahir, f => f.Address.City())
+            .RuleFor(
+                o => o.Agama,
+                f => f.PickRandom("Katolik", "Kristen", "Islam", "Budha", "Hindu", "Konghucu")
+            )
+            .RuleFor(o => o.Kelamin, f => f.PickRandom('P', 'L'))
+            .RuleFor(o => o.Kewarganegaraan, Kewarganegaraan.WNI);
+        var res = seed.Generate();
+
+        return Ok(res);
+    }
+}
