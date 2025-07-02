@@ -16,4 +16,8 @@ public interface IOrangRepos
     Task<bool> CreateOrang(Orang orang);
 
     Task<bool> Save();
+
+    //
+
+    Task<ICollection<Orang>> GetOrangTanpaAkta();
 }

@@ -20,6 +20,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 //Urusan controller
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IOrangRepos, OrangRepos>();
+builder.Services.AddScoped<IAktaKelahiranRepos, AktaKelahiranRepos>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

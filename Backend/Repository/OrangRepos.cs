@@ -6,14 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repository;
 
-public class OrangRepos : IOrangRepos
+public class OrangRepos(DataContext context) : IOrangRepos
 {
-    private readonly DataContext _context;
-
-    public OrangRepos(DataContext context)
-    {
-        _context = context;
-    }
+    private readonly DataContext _context = context;
 
     public Task<Orang> GetOrang(string nik)
     {
@@ -46,22 +41,15 @@ public class OrangRepos : IOrangRepos
 
     public async Task<bool> CreateOrang(Orang orang)
     {
-        //Change tracker
-        //tracker nya itu pengarruh ke add, update, modify
-        //connected vs diconnect state
-        // EntityState.Added
-        if (_context == null)
-        {
-            Console.WriteLine("DataContext is null in CreateOrang");
-            return false;
-        }
-        if (orang == null)
-        {
-            Console.WriteLine("Orang parameter is null in CreateOrang");
-            return false;
-        }
         Console.WriteLine($"Adding Orang: Nik={orang.Nik}, Nama={orang.Nama}");
         await _context.AddAsync(orang);
         return await Save();
+    }
+
+    //Dibawah ini fungsi yg dipakai oleh controller diluar OrangController
+
+    public async Task<ICollection<Orang>> GetOrangTanpaAkta()
+    {
+        return await _context.Orang.Where(o => o.AktaKelahiran == null).ToListAsync();
     }
 }

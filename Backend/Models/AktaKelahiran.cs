@@ -15,17 +15,16 @@ public class AktaKelahiran
 
     public string? NikAyah { get; set; }
 
-    public required DateOnly Tanggal_lahir { get; set; }
-
-    public required string Tempat_lahir { get; set; }
     public required bool Is_active { get; set; }
 
     public required DateOnly Tanggal_penerbitan { get; set; }
 
     [ForeignKey("NikIbu")]
     public Orang? Ibu { get; set; }
+
     [ForeignKey("NikAyah")]
     public Orang? Ayah { get; set; }
+
     [ForeignKey("Nik")]
     public Orang Orang { get; set; } = null!;
 }

@@ -1,18 +1,12 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Backend.Models;
+namespace Backend.DTO;
 
-public class Ktp
+public class KtpDTO
 {
-    [Key]
     public required int Ktp_id { get; set; }
 
     public required string Nik { get; set; }
-
-    [ForeignKey("Nik")]
-    public Orang Orang { get; set; } = null!;
 
     public required string Alamat { get; set; }
 

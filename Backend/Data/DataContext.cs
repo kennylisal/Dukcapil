@@ -78,5 +78,21 @@ public class DataContext : DbContext
             .WithOne(o => o.KartuKeluargaSeabagaiKepala)
             .HasForeignKey<KartuKeluarga>(kk => kk.Nik_kepala_keluarga)
             .OnDelete(DeleteBehavior.Restrict);
+
+        //tambahan auto-generated dibawah
+
+        modelBuilder.Entity<Ktp>(entity =>
+        {
+            entity.HasKey(e => e.Ktp_id);
+            entity.Property(e => e.Ktp_id).ValueGeneratedOnAdd();
+            entity.Property(e => e.Is_active).HasDefaultValue(true);
+        });
+
+        modelBuilder.Entity<AktaKelahiran>(entity =>
+        {
+            entity.HasKey(e => e.AktaKelahiran_id);
+            entity.Property(e => e.AktaKelahiran_id).ValueGeneratedOnAdd();
+            entity.Property(e => e.Is_active).HasDefaultValue(true);
+        });
     }
 }

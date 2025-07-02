@@ -1,16 +1,9 @@
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Backend.Models;
+namespace Backend.DTO;
 
-public class AnggotaKartuKeluarga
+public class AnggotaKartuKeluargaDTO
 {
-    [ForeignKey("KartuKeluargaId")]
-    public KartuKeluarga KartuKeluarga { get; set; } = null!;
-
-    [ForeignKey("Nik")]
-    public Orang Orang { get; set; } = null!;
-
     public string KartuKeluargaId { get; set; }
 
     public required string Nik { get; set; }

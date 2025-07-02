@@ -11,8 +11,12 @@ public class MappingProfiles : Profile
     {
         //objek ke DTO
         CreateMap<Orang, OrangDTO>();
+        CreateMap<AktaKelahiran, AktaKelahiranDTO>();
+        CreateMap<Ktp, KtpDTO>();
 
         //DTO ke Objek
         CreateMap<OrangDTO, Orang>();
+        CreateMap<AktaKelahiranDTO, AktaKelahiran>();
+        CreateMap<KtpDTO, Ktp>();
     }
 }

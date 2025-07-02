@@ -171,3 +171,4 @@ D:\c#\Dukcapil-v1\Backend\bin\Debug\net8.0\Bogus.dll
 D:\c#\Dukcapil-v1\Backend\bin\Debug\net8.0\AutoMapper.dll
 D:\c#\Dukcapil-v1\Backend\bin\Debug\net8.0\CountryData.dll
 D:\c#\Dukcapil-v1\Backend\bin\Debug\net8.0\CountryData.Bogus.dll
+D:\c#\Dukcapil-v1\Backend\obj\Debug\net8.0\Backend.sourcelink.json

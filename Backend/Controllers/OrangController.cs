@@ -86,9 +86,9 @@ public class OrangController : Controller
     }
 
     [HttpPost("auto")]
-    [ProducesResponseType(200, Type = typeof(Orang))]
+    [ProducesResponseType(200, Type = typeof(OrangDTO))]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<Orang>> CreateOrangGenerated()
+    public async Task<ActionResult<OrangDTO>> CreateOrangGenerated()
     {
         if (_repos == null)
         {
@@ -114,27 +114,16 @@ public class OrangController : Controller
             ModelState.AddModelError("", "Internal Error While Saving");
             return StatusCode(500, ModelState);
         }
-        return Ok(res);
+        return Ok(_mapper.Map<OrangDTO>(res));
     }
 
-    [HttpPost("percobaan")]
-    [ProducesResponseType(200, Type = typeof(Orang))]
+    [HttpGet("tanpaAkta")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
     [ProducesResponseType(500)]
-    public ActionResult<Orang> CreateOrangPercobaan()
+    public async Task<ActionResult<Orang>> CreateOrangPercobaan()
     {
-        var seed = new Faker<Orang>("id_ID")
-            .RuleFor(o => o.Nik, f => f.Random.Replace("################"))
-            .RuleFor(o => o.Nama, f => f.Person.FullName)
-            .RuleFor(o => o.Tanggal_lahir, f => DateOnly.FromDateTime(f.Date.Past(60)))
-            .RuleFor(o => o.Tempat_lahir, f => f.Address.City())
-            .RuleFor(
-                o => o.Agama,
-                f => f.PickRandom("Katolik", "Kristen", "Islam", "Budha", "Hindu", "Konghucu")
-            )
-            .RuleFor(o => o.Kelamin, f => f.PickRandom('P', 'L'))
-            .RuleFor(o => o.Kewarganegaraan, Kewarganegaraan.WNI);
-        var res = seed.Generate();
+        var res = await _repos.GetOrangTanpaAkta();
 
-        return Ok(res);
+        return Ok(_mapper.Map<List<OrangDTO>>(res));
     }
 }
