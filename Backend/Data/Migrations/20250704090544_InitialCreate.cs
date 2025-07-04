@@ -21,28 +21,24 @@ namespace Backend.Data.Migrations
                     Tempat_lahir = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Agama = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Kelamin = table.Column<string>(type: "nvarchar(1)", nullable: false),
-                    Kewarganegaraan = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Kewarganegaraan = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orang", x => x.Nik);
-                }
-            );
+                });
 
             migrationBuilder.CreateTable(
                 name: "AktaKelahiran",
                 columns: table => new
                 {
-                    AktaKelahiran_id = table
-                        .Column<int>(type: "int", nullable: false)
+                    AktaKelahiran_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nik = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     NikIbu = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     NikAyah = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Tanggal_lahir = table.Column<DateOnly>(type: "date", nullable: false),
-                    Tempat_lahir = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Is_active = table.Column<bool>(type: "bit", nullable: false),
-                    Tanggal_penerbitan = table.Column<DateOnly>(type: "date", nullable: false),
+                    Is_active = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    Tanggal_penerbitan = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,22 +48,47 @@ namespace Backend.Data.Migrations
                         column: x => x.Nik,
                         principalTable: "Orang",
                         principalColumn: "Nik",
-                        onDelete: ReferentialAction.Cascade
-                    );
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AktaKelahiran_Orang_NikAyah",
                         column: x => x.NikAyah,
                         principalTable: "Orang",
-                        principalColumn: "Nik"
-                    );
+                        principalColumn: "Nik");
                     table.ForeignKey(
                         name: "FK_AktaKelahiran_Orang_NikIbu",
                         column: x => x.NikIbu,
                         principalTable: "Orang",
-                        principalColumn: "Nik"
-                    );
-                }
-            );
+                        principalColumn: "Nik");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AktaPernikahans",
+                columns: table => new
+                {
+                    Id_akta_pernikahan = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nik_suami = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Nik_istri = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Tanggal_pernikahan = table.Column<DateOnly>(type: "date", nullable: false),
+                    Tanggal_penerbitan = table.Column<DateOnly>(type: "date", nullable: false),
+                    Agama_pernikahan = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Is_active = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    Lokasi_penerbitan = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AktaPernikahans", x => x.Id_akta_pernikahan);
+                    table.ForeignKey(
+                        name: "FK_AktaPernikahans_Orang_Nik_istri",
+                        column: x => x.Nik_istri,
+                        principalTable: "Orang",
+                        principalColumn: "Nik");
+                    table.ForeignKey(
+                        name: "FK_AktaPernikahans_Orang_Nik_suami",
+                        column: x => x.Nik_suami,
+                        principalTable: "Orang",
+                        principalColumn: "Nik");
+                });
 
             migrationBuilder.CreateTable(
                 name: "KartuKeluarga",
@@ -80,10 +101,7 @@ namespace Backend.Data.Migrations
                     Kode_pos = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Tanggal_penerbitan = table.Column<DateOnly>(type: "date", nullable: false),
                     Is_active = table.Column<bool>(type: "bit", nullable: false),
-                    Nik_kepala_keluarga = table.Column<string>(
-                        type: "nvarchar(450)",
-                        nullable: false
-                    ),
+                    Nik_kepala_keluarga = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -93,25 +111,22 @@ namespace Backend.Data.Migrations
                         column: x => x.Nik_kepala_keluarga,
                         principalTable: "Orang",
                         principalColumn: "Nik",
-                        onDelete: ReferentialAction.Restrict
-                    );
-                }
-            );
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Ktp",
                 columns: table => new
                 {
-                    Ktp_id = table
-                        .Column<int>(type: "int", nullable: false)
+                    Ktp_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nik = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Alamat = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Sudah_Kawin = table.Column<bool>(type: "bit", nullable: false),
                     Berlaku_hingga = table.Column<DateOnly>(type: "date", nullable: false),
-                    Is_active = table.Column<bool>(type: "bit", nullable: false),
+                    Is_active = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     Kota_pembuatan = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Tanggal_penerbitan = table.Column<DateOnly>(type: "date", nullable: false),
+                    Tanggal_penerbitan = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,10 +136,8 @@ namespace Backend.Data.Migrations
                         column: x => x.Nik,
                         principalTable: "Orang",
                         principalColumn: "Nik",
-                        onDelete: ReferentialAction.Cascade
-                    );
-                }
-            );
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateTable(
                 name: "AnggotaKartuKeluarga",
@@ -136,85 +149,92 @@ namespace Backend.Data.Migrations
                     Jenis_pekerjaan = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Masih_anak = table.Column<bool>(type: "bit", nullable: false),
                     Is_active = table.Column<bool>(type: "bit", nullable: false),
-                    Peran = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Kartu_keluarga_id = table.Column<int>(type: "int", nullable: false),
+                    Peran = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey(
-                        "PK_AnggotaKartuKeluarga",
-                        x => new { x.KartuKeluargaId, x.Nik }
-                    );
+                    table.PrimaryKey("PK_AnggotaKartuKeluarga", x => new { x.KartuKeluargaId, x.Nik });
                     table.ForeignKey(
                         name: "FK_AnggotaKartuKeluarga_KartuKeluarga_KartuKeluargaId",
                         column: x => x.KartuKeluargaId,
                         principalTable: "KartuKeluarga",
                         principalColumn: "Nomor_KK",
-                        onDelete: ReferentialAction.Cascade
-                    );
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AnggotaKartuKeluarga_Orang_Nik",
                         column: x => x.Nik,
                         principalTable: "Orang",
                         principalColumn: "Nik",
-                        onDelete: ReferentialAction.Cascade
-                    );
-                }
-            );
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AktaKelahiran_Nik",
                 table: "AktaKelahiran",
                 column: "Nik",
-                unique: true
-            );
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AktaKelahiran_NikAyah",
                 table: "AktaKelahiran",
-                column: "NikAyah"
-            );
+                column: "NikAyah");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AktaKelahiran_NikIbu",
                 table: "AktaKelahiran",
-                column: "NikIbu"
-            );
+                column: "NikIbu");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AktaPernikahans_Nik_istri",
+                table: "AktaPernikahans",
+                column: "Nik_istri",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AktaPernikahans_Nik_suami",
+                table: "AktaPernikahans",
+                column: "Nik_suami",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AnggotaKartuKeluarga_Nik",
                 table: "AnggotaKartuKeluarga",
                 column: "Nik",
-                unique: true
-            );
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_KartuKeluarga_Nik_kepala_keluarga",
                 table: "KartuKeluarga",
                 column: "Nik_kepala_keluarga",
-                unique: true
-            );
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ktp_Nik",
                 table: "Ktp",
                 column: "Nik",
-                unique: true
-            );
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "AktaKelahiran");
+            migrationBuilder.DropTable(
+                name: "AktaKelahiran");
 
-            migrationBuilder.DropTable(name: "AnggotaKartuKeluarga");
+            migrationBuilder.DropTable(
+                name: "AktaPernikahans");
 
-            migrationBuilder.DropTable(name: "Ktp");
+            migrationBuilder.DropTable(
+                name: "AnggotaKartuKeluarga");
 
-            migrationBuilder.DropTable(name: "KartuKeluarga");
+            migrationBuilder.DropTable(
+                name: "Ktp");
 
-            migrationBuilder.DropTable(name: "Orang");
+            migrationBuilder.DropTable(
+                name: "KartuKeluarga");
+
+            migrationBuilder.DropTable(
+                name: "Orang");
         }
     }
 }

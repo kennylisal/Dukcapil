@@ -5,12 +5,13 @@ namespace Backend.Models;
 
 public enum Kewarganegaraan
 {
-    WNI,WNA
+    WNI,
+    WNA,
 }
 
 public class Orang
 {
-    // required gunanya supaya pastikan tidak boleh null 
+    // required gunanya supaya pastikan tidak boleh null
     //soalnya string tidak boleh null awalnya
     [Key]
     public required string Nik { get; set; }
@@ -33,6 +34,10 @@ public class Orang
     public AktaKelahiran? AktaKelahiran { get; set; }
 
     public AnggotaKartuKeluarga? AnggotaKartuKeluarga { get; set; }
-    
+
     public KartuKeluarga? KartuKeluargaSeabagaiKepala { get; set; }
+
+    public AktaPernikahan? AktaPernikahanSuami { get; set; }
+
+    public AktaPernikahan? AktaPernikahanIstri { get; set; }
 }

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Backend.Data;
+using Backend.Helper;
 using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +42,7 @@ public class OrangRepos(DataContext context) : IOrangRepos
 
     public async Task<bool> CreateOrang(Orang orang)
     {
-        Console.WriteLine($"Adding Orang: Nik={orang.Nik}, Nama={orang.Nama}");
+        // Console.WriteLine($"Adding Orang: Nik={orang.Nik}, Nama={orang.Nama}");
         await _context.AddAsync(orang);
         return await Save();
     }
@@ -51,5 +52,64 @@ public class OrangRepos(DataContext context) : IOrangRepos
     public async Task<ICollection<Orang>> GetOrangTanpaAkta()
     {
         return await _context.Orang.Where(o => o.AktaKelahiran == null).ToListAsync();
+    }
+
+    public async Task<ICollection<Orang>> GetOrangTanpaKtp()
+    {
+        return await _context.Orang.Where(o => o.Ktp == null).ToListAsync();
+    }
+
+    // public Task<bool> CreteOrangWithSpesificGender(char g)
+    // {
+    //     throw new NotImplementedException();
+    // }
+
+    public async Task<ICollection<Orang>> GetOrangsWithSpesificGender(char g)
+    {
+        return await _context.Orang.Where(o => o.Kelamin == g).ToListAsync();
+    }
+
+    //ini yang bikin Orang + akta_kelahiran + Ktp
+    public async Task<Orang> CreateOrangDewasa(char g)
+    {
+        DataGenerator dg = new();
+        Orang orang = dg.CreateOrangSiapKawin(g);
+        AktaKelahiran aktaKelahiran = dg.CreateAktaKelahiranBasic(orang);
+        Ktp ktp = dg.CreateKtpBasic(orang);
+        await _context.Orang.AddAsync(orang);
+        await _context.AktaKelahiran.AddAsync(aktaKelahiran);
+        await _context.Ktp.AddAsync(ktp);
+
+        if (!await Save())
+        {
+            throw new Exception("Terjadi kesalahan ketika bikin dummy orang dewasa");
+        }
+        return orang;
+    }
+
+    public async Task<ICollection<Orang>> CreateManyOrangDewasa(int n, char kelamin)
+    {
+        List<Orang> orangs = [];
+        List<AktaKelahiran> aktaKelahirans = [];
+        List<Ktp> ktps = [];
+        DataGenerator dg = new();
+        for (int i = 0; i < n; i++)
+        {
+            Orang orang = dg.CreateOrangSiapKawin(kelamin);
+            AktaKelahiran aktaKelahiran = dg.CreateAktaKelahiranBasic(orang);
+            Ktp ktp = dg.CreateKtpBasic(orang);
+
+            orangs.Add(orang);
+            aktaKelahirans.Add(aktaKelahiran);
+            ktps.Add(ktp);
+        }
+        await _context.Orang.AddRangeAsync(orangs);
+        await _context.AktaKelahiran.AddRangeAsync(aktaKelahirans);
+        await _context.Ktp.AddRangeAsync(ktps);
+        if (!await Save())
+        {
+            throw new Exception("Terjadi kesalahan ketika bikin dummy orang dewasa");
+        }
+        return orangs;
     }
 }

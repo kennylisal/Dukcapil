@@ -60,6 +60,52 @@ namespace Backend.Data.Migrations
                     b.ToTable("AktaKelahiran");
                 });
 
+            modelBuilder.Entity("Backend.Models.AktaPernikahan", b =>
+                {
+                    b.Property<int>("Id_akta_pernikahan")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_akta_pernikahan"));
+
+                    b.Property<string>("Agama_pernikahan")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Is_active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Lokasi_penerbitan")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nik_istri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Nik_suami")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateOnly>("Tanggal_penerbitan")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("Tanggal_pernikahan")
+                        .HasColumnType("date");
+
+                    b.HasKey("Id_akta_pernikahan");
+
+                    b.HasIndex("Nik_istri")
+                        .IsUnique();
+
+                    b.HasIndex("Nik_suami")
+                        .IsUnique();
+
+                    b.ToTable("AktaPernikahans");
+                });
+
             modelBuilder.Entity("Backend.Models.AnggotaKartuKeluarga", b =>
                 {
                     b.Property<string>("KartuKeluargaId")
@@ -233,6 +279,25 @@ namespace Backend.Data.Migrations
                     b.Navigation("Orang");
                 });
 
+            modelBuilder.Entity("Backend.Models.AktaPernikahan", b =>
+                {
+                    b.HasOne("Backend.Models.Orang", "Istri")
+                        .WithOne("AktaPernikahanIstri")
+                        .HasForeignKey("Backend.Models.AktaPernikahan", "Nik_istri")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Orang", "Suami")
+                        .WithOne("AktaPernikahanSuami")
+                        .HasForeignKey("Backend.Models.AktaPernikahan", "Nik_suami")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Istri");
+
+                    b.Navigation("Suami");
+                });
+
             modelBuilder.Entity("Backend.Models.AnggotaKartuKeluarga", b =>
                 {
                     b.HasOne("Backend.Models.KartuKeluarga", "KartuKeluarga")
@@ -282,6 +347,10 @@ namespace Backend.Data.Migrations
             modelBuilder.Entity("Backend.Models.Orang", b =>
                 {
                     b.Navigation("AktaKelahiran");
+
+                    b.Navigation("AktaPernikahanIstri");
+
+                    b.Navigation("AktaPernikahanSuami");
 
                     b.Navigation("AnggotaKartuKeluarga");
 

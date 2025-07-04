@@ -11,7 +11,7 @@ public class AnggotaKartuKeluarga
     [ForeignKey("Nik")]
     public Orang Orang { get; set; } = null!;
 
-    public string KartuKeluargaId { get; set; }
+    public required string KartuKeluargaId { get; set; }
 
     public required string Nik { get; set; }
 

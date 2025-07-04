@@ -20,4 +20,13 @@ public interface IOrangRepos
     //
 
     Task<ICollection<Orang>> GetOrangTanpaAkta();
+
+    Task<ICollection<Orang>> GetOrangTanpaKtp();
+
+    // Task<bool> CreteOrangWithSpesificGender(char g);
+
+    Task<ICollection<Orang>> GetOrangsWithSpesificGender(char g);
+    Task<Orang> CreateOrangDewasa(char g);
+
+    Task<ICollection<Orang>> CreateManyOrangDewasa(int n, char kelamin);
 }

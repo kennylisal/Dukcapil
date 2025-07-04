@@ -1,12 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using AutoMapper;
 using Backend.DTO;
+using Backend.Helper;
 using Backend.Interfaces;
 using Backend.Models;
-using Bogus;
-using CountryData;
-using CountryData.Bogus;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
@@ -95,18 +91,8 @@ public class OrangController : Controller
             Console.WriteLine("Repository is null!");
             return StatusCode(500, "Repository not initialized.");
         }
-        var seed = new Faker<Orang>("id_ID")
-            .RuleFor(o => o.Nik, f => f.Random.Replace("################"))
-            .RuleFor(o => o.Nama, f => f.Person.FullName)
-            .RuleFor(o => o.Tanggal_lahir, f => DateOnly.FromDateTime(f.Date.Past(60)))
-            .RuleFor(o => o.Tempat_lahir, f => f.Address.City())
-            .RuleFor(
-                o => o.Agama,
-                f => f.PickRandom("Katolik", "Kristen", "Islam", "Budha", "Hindu", "Konghucu")
-            )
-            .RuleFor(o => o.Kelamin, f => f.PickRandom('P', 'L'))
-            .RuleFor(o => o.Kewarganegaraan, Kewarganegaraan.WNI);
-        var res = seed.Generate();
+
+        var res = new DataGenerator().CreateOrangRandom();
 
         var createResult = await _repos.CreateOrang(res);
         if (!createResult)
@@ -120,10 +106,19 @@ public class OrangController : Controller
     [HttpGet("tanpaAkta")]
     [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
     [ProducesResponseType(500)]
-    public async Task<ActionResult<Orang>> CreateOrangPercobaan()
+    public async Task<ActionResult<OrangDTO>> CreateOrangPercobaan()
     {
         var res = await _repos.GetOrangTanpaAkta();
 
         return Ok(_mapper.Map<List<OrangDTO>>(res));
+    }
+
+    [HttpGet("tanpaKtp")]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
+    public async Task<ActionResult<OrangDTO>> GetOrangsTanpaKtp()
+    {
+        var list = await _repos.GetOrangTanpaKtp();
+        var res = _mapper.Map<OrangDTO>(list);
+        return Ok(res);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using AutoMapper;
 using Backend.DTO;
+using Backend.Helper;
 using Backend.Interfaces;
 using Backend.Models;
 using Bogus;
@@ -44,13 +45,7 @@ public class AktaKelahiranController(
 
         var orangPilihan = new Faker().PickRandom(listOrang);
 
-        var seed = new Faker<AktaKelahiran>("id_ID")
-            .RuleFor(ak => ak.Nik, orangPilihan.Nik)
-            .RuleFor(ak => ak.NikAyah, "x")
-            .RuleFor(ak => ak.NikIbu, "x")
-            .RuleFor(ak => ak.Tanggal_penerbitan, DateOnly.FromDateTime(DateTime.Today))
-            .RuleFor(ak => ak.Orang, orangPilihan);
-        var res = seed.Generate();
+        var res = new DataGenerator().CreateAktaKelahiranBasic(orangPilihan);
 
         var createResult = await _repos.CreateAkta(res, null, null);
         if (!createResult)

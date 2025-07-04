@@ -18,6 +18,8 @@ public class DataContext : DbContext
 
     public DbSet<KartuKeluarga> KartuKeluarga { get; set; }
 
+    public DbSet<AktaPernikahan> AktaPernikahans { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Orang>().Property(o => o.Kewarganegaraan).HasConversion<string>();
@@ -70,6 +72,36 @@ public class DataContext : DbContext
         modelBuilder
             .Entity<AnggotaKartuKeluarga>()
             .HasKey(ak => new { ak.KartuKeluargaId, ak.Nik });
+
+        modelBuilder
+            .Entity<AktaPernikahan>()
+            .HasOne(ak => ak.Suami)
+            .WithOne(s => s.AktaPernikahanSuami)
+            .HasForeignKey<AktaPernikahan>(ak => ak.Nik_suami)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder
+            .Entity<AktaPernikahan>()
+            .HasOne(ak => ak.Istri)
+            .WithOne(s => s.AktaPernikahanIstri)
+            .HasForeignKey<AktaPernikahan>(ak => ak.Nik_istri)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        //ini dibawah kalau misalnya nd perlu dicek inverse
+        //terus hapus field aktaPernikahan di class orang
+        // modelBuilder
+        //     .Entity<AktaPernikahan>()
+        //     .HasOne(ak => ak.Suami)
+        //     .WithOne() // No inverse navigation property
+        //     .HasForeignKey<AktaPernikahan>(ak => ak.Nik_suami);
+
+        // // Configure relationship for Istri without inverse navigation
+        // modelBuilder
+        //     .Entity<AktaPernikahan>()
+        //     .HasOne(ak => ak.Istri)
+        //     .WithOne() // No inverse navigation property
+        //     .HasForeignKey<AktaPernikahan>(ak => ak.Nik_istri);
+
         //haskey dan yang seperti ini, hanya boleh int atau string
 
         modelBuilder
@@ -92,6 +124,13 @@ public class DataContext : DbContext
         {
             entity.HasKey(e => e.AktaKelahiran_id);
             entity.Property(e => e.AktaKelahiran_id).ValueGeneratedOnAdd();
+            entity.Property(e => e.Is_active).HasDefaultValue(true);
+        });
+
+        modelBuilder.Entity<AktaPernikahan>(entity =>
+        {
+            entity.HasKey(e => e.Id_akta_pernikahan);
+            entity.Property(e => e.Id_akta_pernikahan).ValueGeneratedOnAdd();
             entity.Property(e => e.Is_active).HasDefaultValue(true);
         });
     }
