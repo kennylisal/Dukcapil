@@ -36,6 +36,10 @@ public class AktaPernikahanRepos(DataContext context) : IAktaPernikahanRepos
 
     public async Task<AktaPernikahan?> GetAktaWithId(int id)
     {
+        // var aktaPernikahan = await _dbContext.AktaPernikahans
+        //     .Include(ap => ap.Suami) // Eagerly load Suami
+        //     .Include(ap => ap.Istri) // Eagerly load Istri
+        //     .FirstOrDefaultAsync(ap => ap.Id_akta_pernikahan == id);
         return await _context
             .AktaPernikahans.Where(ak => ak.Id_akta_pernikahan == id)
             .FirstOrDefaultAsync();
@@ -50,7 +54,10 @@ public class AktaPernikahanRepos(DataContext context) : IAktaPernikahanRepos
 
     public async Task<ICollection<AktaPernikahan>> getAllAktaPernikahan()
     {
-        return await _context.AktaPernikahans.ToListAsync();
+        return await _context
+            .AktaPernikahans.Include(ap => ap.Istri)
+            .Include(ap => ap.Suami)
+            .ToListAsync();
     }
 
     public async Task<bool> Save()
@@ -65,10 +72,10 @@ public class AktaPernikahanRepos(DataContext context) : IAktaPernikahanRepos
     )
     {
         List<AktaPernikahan> listOfAkta = [];
-        DataGenerator dg = new();
+        // DataGenerator dg = new();
         for (int i = 0; i < listCowok.Count; i++)
         {
-            var akta = dg.CreateAktaPernikahanBasic(listCowok[i], listCewek[i]);
+            var akta = DataGenerator.CreateAktaPernikahanBasic(listCowok[i], listCewek[i]);
             listOfAkta.Add(akta);
         }
 
@@ -78,5 +85,108 @@ public class AktaPernikahanRepos(DataContext context) : IAktaPernikahanRepos
             throw new Exception("Terjadi kesalahan pas auto Akta - Pernikahan massal");
         }
         return listOfAkta;
+    }
+
+    public async Task<ICollection<AktaPernikahan>?> CraeteAktaPernikahanAuto()
+    {
+        int n = 10;
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            List<Orang> listLaki = [];
+            List<AktaKelahiran> aktaKelahirans = [];
+            List<Ktp> ktps = [];
+            for (int i = 0; i < n; i++)
+            {
+                Orang orang = DataGenerator.CreateOrangSiapKawin('L');
+                AktaKelahiran aktaKelahiran = DataGenerator.CreateAktaKelahiranBasic(orang);
+                Ktp ktp = DataGenerator.CreateKtpBasic(orang);
+
+                listLaki.Add(orang);
+                aktaKelahirans.Add(aktaKelahiran);
+                ktps.Add(ktp);
+            }
+            await _context.Orang.AddRangeAsync(listLaki);
+
+            List<Orang> listPerempuan = [];
+            for (int i = 0; i < n; i++)
+            {
+                Orang orang = DataGenerator.CreateOrangSiapKawin('P');
+                AktaKelahiran aktaKelahiran = DataGenerator.CreateAktaKelahiranBasic(orang);
+                Ktp ktp = DataGenerator.CreateKtpBasic(orang);
+
+                listPerempuan.Add(orang);
+                aktaKelahirans.Add(aktaKelahiran);
+                ktps.Add(ktp);
+            }
+            await _context.Orang.AddRangeAsync(listPerempuan);
+            if (!await Save())
+            {
+                throw new Exception("Terjadi kesalahan pas auto Akta - Pernikahan massal");
+            }
+
+            await _context.AktaKelahiran.AddRangeAsync(aktaKelahirans);
+            await _context.Ktp.AddRangeAsync(ktps);
+            if (!await Save())
+            {
+                throw new Exception("Terjadi kesalahan pas auto Akta - Pernikahan massal");
+            }
+
+            List<AktaPernikahan> listAktaNikah = [];
+            for (int i = 0; i < listLaki.Count; i++)
+            {
+                var aktaNikah = DataGenerator.CreateAktaPernikahanBasic(
+                    listLaki[i],
+                    listPerempuan[i]
+                );
+                listAktaNikah.Add(aktaNikah);
+            }
+
+            await _context.AktaPernikahans.AddRangeAsync(listAktaNikah);
+
+            if (!await Save())
+            {
+                throw new Exception("Terjadi kesalahan pas auto Akta - Pernikahan massal");
+            }
+
+            // List<KartuKeluarga> listKK = [];
+            // for (int i = 0; i < listAktaNikah.Count; i++)
+            // {
+            //     var kkBaru = DataGenerator.CreateKartuKeluargaBasic(
+            //         listLaki[i],
+            //         listAktaNikah[i].Tanggal_penerbitan
+            //     );
+            //     listKK.Add(kkBaru);
+            // }
+            // await _context.KartuKeluarga.AddRangeAsync(listKK);
+            // if (!await Save())
+            // {
+            //     throw new Exception("Terjadi kesalahan pas auto Akta - Pernikahan massal");
+            // }
+
+            // List<AnggotaKartuKeluarga> listAnggotaKK = [];
+            // for (int i = 0; i < listKK.Count; i++)
+            // {
+            //     var anggota = DataGenerator.CreateAnggotaKeluargaBasic(
+            //         listPerempuan[i],
+            //         listKK[i],
+            //         "Istri"
+            //     );
+            //     listAnggotaKK.Add(anggota);
+            // }
+            // await _context.AnggotaKartuKeluarga.AddRangeAsync(listAnggotaKK);
+            // if (!await Save())
+            // {
+            //     throw new Exception("Terjadi kesalahan pas auto Akta - Pernikahan massal");
+            // }
+            // //
+            await transaction.CommitAsync();
+            return listAktaNikah;
+        }
+        catch (System.Exception)
+        {
+            await transaction.RollbackAsync();
+            return null;
+        }
     }
 }

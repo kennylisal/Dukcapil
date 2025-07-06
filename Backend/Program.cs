@@ -22,6 +22,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IOrangRepos, OrangRepos>();
 builder.Services.AddScoped<IAktaKelahiranRepos, AktaKelahiranRepos>();
 builder.Services.AddScoped<IKtpRepos, KtpRepos>();
+builder.Services.AddScoped<IAktaPernikahanRepos, AktaPernikahanRepos>();
+builder.Services.AddScoped<IKartuKeluargaRepos, KartuKeluargaRepos>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

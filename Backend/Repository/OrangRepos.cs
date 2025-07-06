@@ -59,11 +59,6 @@ public class OrangRepos(DataContext context) : IOrangRepos
         return await _context.Orang.Where(o => o.Ktp == null).ToListAsync();
     }
 
-    // public Task<bool> CreteOrangWithSpesificGender(char g)
-    // {
-    //     throw new NotImplementedException();
-    // }
-
     public async Task<ICollection<Orang>> GetOrangsWithSpesificGender(char g)
     {
         return await _context.Orang.Where(o => o.Kelamin == g).ToListAsync();
@@ -72,10 +67,9 @@ public class OrangRepos(DataContext context) : IOrangRepos
     //ini yang bikin Orang + akta_kelahiran + Ktp
     public async Task<Orang> CreateOrangDewasa(char g)
     {
-        DataGenerator dg = new();
-        Orang orang = dg.CreateOrangSiapKawin(g);
-        AktaKelahiran aktaKelahiran = dg.CreateAktaKelahiranBasic(orang);
-        Ktp ktp = dg.CreateKtpBasic(orang);
+        Orang orang = DataGenerator.CreateOrangSiapKawin(g);
+        AktaKelahiran aktaKelahiran = DataGenerator.CreateAktaKelahiranBasic(orang);
+        Ktp ktp = DataGenerator.CreateKtpBasic(orang);
         await _context.Orang.AddAsync(orang);
         await _context.AktaKelahiran.AddAsync(aktaKelahiran);
         await _context.Ktp.AddAsync(ktp);
@@ -92,12 +86,11 @@ public class OrangRepos(DataContext context) : IOrangRepos
         List<Orang> orangs = [];
         List<AktaKelahiran> aktaKelahirans = [];
         List<Ktp> ktps = [];
-        DataGenerator dg = new();
         for (int i = 0; i < n; i++)
         {
-            Orang orang = dg.CreateOrangSiapKawin(kelamin);
-            AktaKelahiran aktaKelahiran = dg.CreateAktaKelahiranBasic(orang);
-            Ktp ktp = dg.CreateKtpBasic(orang);
+            Orang orang = DataGenerator.CreateOrangSiapKawin(kelamin);
+            AktaKelahiran aktaKelahiran = DataGenerator.CreateAktaKelahiranBasic(orang);
+            Ktp ktp = DataGenerator.CreateKtpBasic(orang);
 
             orangs.Add(orang);
             aktaKelahirans.Add(aktaKelahiran);

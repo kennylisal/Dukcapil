@@ -9,14 +9,21 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - ./init-db.sql:/init-db.sql
-    command:
-      - /bin/bash
-      - |
-        /opt/mssql/bin/sqlservr &
-        sleep 30
-        /opt/mssql-tools18/bin/sqlcmd -U sa -P $$MSSQL_SA_PASSWORD -C -l 30 -e -i /init-db.sql
-        sleep infinity
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+#dibawah untuk comman custom
+# services:
+#   sql-server:
+#     image: mcr.microsoft.com/mssql/server:2022-latest
+#     container_name: Dukcapil-sql-server-container
+#     environment:
+#       - ACCEPT_EULA=Y
+#       - MSSQL_SA_PASSWORD=Password21!
+#       - MSSQL_PID=Developer
+#     ports:
+#       - "1433:1433"
+#     volumes:
+#       - ./init-db.sql:/init-db.sql
+#     command: /bin/bash -c "sleep 30 && /opt/mssql-tools18/bin/sqlcmd -U sa -P $$MSSQL_SA_PASSWORD -C -l 30 -e -i /init-db.sql && /opt/mssql/bin/sqlservr"
 
 # services:
 #   sql-server:

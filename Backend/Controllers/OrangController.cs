@@ -92,7 +92,7 @@ public class OrangController : Controller
             return StatusCode(500, "Repository not initialized.");
         }
 
-        var res = new DataGenerator().CreateOrangRandom();
+        var res = DataGenerator.CreateOrangRandom();
 
         var createResult = await _repos.CreateOrang(res);
         if (!createResult)

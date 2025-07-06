@@ -45,7 +45,7 @@ public class AktaKelahiranController(
 
         var orangPilihan = new Faker().PickRandom(listOrang);
 
-        var res = new DataGenerator().CreateAktaKelahiranBasic(orangPilihan);
+        var res = DataGenerator.CreateAktaKelahiranBasic(orangPilihan);
 
         var createResult = await _repos.CreateAkta(res, null, null);
         if (!createResult)

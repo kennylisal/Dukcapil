@@ -22,4 +22,6 @@ public interface IAktaPernikahanRepos
         List<Orang> listCowok,
         List<Orang> listCewek
     );
+
+    Task<ICollection<AktaPernikahan>?> CraeteAktaPernikahanAuto();
 }

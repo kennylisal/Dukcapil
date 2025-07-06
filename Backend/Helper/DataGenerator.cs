@@ -4,7 +4,7 @@ using Bogus;
 
 namespace Backend.Helper;
 
-public class DataGenerator
+public static class DataGenerator
 {
     public enum CharKelamin
     {
@@ -12,7 +12,7 @@ public class DataGenerator
         L,
     }
 
-    public Orang CreateOrangRandom()
+    public static Orang CreateOrangRandom()
     {
         var seed = new Faker<Orang>("id_ID")
             .RuleFor(o => o.Nik, f => f.Random.Replace("################"))
@@ -29,7 +29,7 @@ public class DataGenerator
         return seed.Generate();
     }
 
-    public Orang CreateOrangSiapKawin(char g)
+    public static Orang CreateOrangSiapKawin(char g)
     {
         CharKelamin kelamin = CharKelamin.P;
         if (g == 'L')
@@ -55,7 +55,7 @@ public class DataGenerator
         return seed.Generate();
     }
 
-    public List<Orang> CreateManySiapKawin(char g, int jumlah)
+    public static List<Orang> CreateManySiapKawin(char g, int jumlah)
     {
         CharKelamin kelamin = CharKelamin.P;
         if (g == 'L')
@@ -81,18 +81,20 @@ public class DataGenerator
         return seed.Generate(jumlah);
     }
 
-    public AktaKelahiran CreateAktaKelahiranBasic(Orang orang)
+    public static AktaKelahiran CreateAktaKelahiranBasic(Orang orang)
     {
         var seed = new Faker<AktaKelahiran>("id_ID")
             .RuleFor(ak => ak.Nik, orang.Nik)
-            .RuleFor(ak => ak.NikAyah, "x")
-            .RuleFor(ak => ak.NikIbu, "x")
+            .RuleFor(ak => ak.NikAyah, f => null)
+            .RuleFor(ak => ak.NikIbu, f => null)
+            .RuleFor(ak => ak.Ayah, f => null)
+            .RuleFor(ak => ak.Ibu, f => null)
             .RuleFor(ak => ak.Tanggal_penerbitan, orang.Tanggal_lahir.AddDays(1))
             .RuleFor(ak => ak.Orang, orang);
         return seed.Generate();
     }
 
-    public Ktp CreateKtpBasic(Orang orangPilihan)
+    public static Ktp CreateKtpBasic(Orang orangPilihan)
     {
         var seed = new Faker<Ktp>("id_ID")
             .RuleFor(k => k.Nik, orangPilihan.Nik)
@@ -106,7 +108,7 @@ public class DataGenerator
         return seed.Generate();
     }
 
-    public AktaPernikahan CreateAktaPernikahanBasic(Orang suami, Orang istri)
+    public static AktaPernikahan CreateAktaPernikahanBasic(Orang suami, Orang istri)
     {
         var tanggalPilihan =
             suami.Tanggal_lahir > istri.Tanggal_lahir ? istri.Tanggal_lahir : suami.Tanggal_lahir;
@@ -123,10 +125,10 @@ public class DataGenerator
         return seed.Generate();
     }
 
-    public KartuKeluarga CreateKartuKeluargaBasic(Orang kepala, DateOnly TglPernikahan)
+    public static KartuKeluarga CreateKartuKeluargaBasic(Orang kepala, DateOnly TglPernikahan)
     {
         var prov = new Faker().PickRandom(IndonesiaLocationData.GetProvinces());
-        var seed = new Faker<KartuKeluarga>("id_id")
+        var seed = new Faker<KartuKeluarga>("id_ID")
             .RuleFor(k => k.Alamat, f => f.Address.FullAddress())
             .RuleFor(k => k.Kepala_Keluarga, kepala)
             .RuleFor(k => k.Nomor_KK, f => f.Random.Replace("################"))
@@ -140,7 +142,7 @@ public class DataGenerator
         return seed.Generate();
     }
 
-    public AnggotaKartuKeluarga CreateAnggotaKeluargaBasic(
+    public static AnggotaKartuKeluarga CreateAnggotaKeluargaBasic(
         Orang orang,
         KartuKeluarga kk,
         string peran

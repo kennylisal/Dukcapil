@@ -26,7 +26,7 @@ public class AktaPernikahanController(
     public async Task<ActionResult<IEnumerable<AktaPernikahanDTO>>> GetAllAktaPernikahan()
     {
         var res = await _repos.getAllAktaPernikahan();
-        return Ok(_mapper.Map<AktaPernikahanDTO>(res));
+        return Ok(_mapper.Map<ICollection<AktaPernikahanDTO>>(res));
     }
 
     [HttpGet("{Nik}")]
@@ -55,13 +55,30 @@ public class AktaPernikahanController(
             return Ok(_mapper.Map<AktaPernikahanDTO>(res));
     }
 
-    // [HttpPost("auto")]
-    // [ProducesResponseType(204, Type = typeof(AktaPernikahanDTO))]
-    // [ProducesResponseType(500)]
-    // public async Task<ActionResult<AktaPernikahanDTO> CreateAktaPernikahanAuto() {
-    //     var listCowok = await _orangRepos.GetOrangsWithSpesificGender('L');
-    //     var listCewek = await _orangRepos.GetOrangsWithSpesificGender('P');
+    [HttpPost]
+    [ProducesResponseType(204, Type = typeof(AktaPernikahanDTO))]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult<AktaPernikahanDTO>> CreateAktaPernikaan(
+        [FromBody] AktaPernikahanDTO aktaPernikahanDTO,
+        string nik_suami,
+        string nik_istri
+    )
+    {
+        if (aktaPernikahanDTO == null || nik_istri == null || nik_suami == null)
+        {
+            return StatusCode(400);
+        }
+        var aktaPernikahan = _mapper.Map<AktaPernikahan>(aktaPernikahanDTO);
+        await _repos.CreateAktaPernikahan(nik_suami, nik_istri, aktaPernikahan);
+        return Ok();
+    }
 
-    //     var seed = new Faker<AktaPernikahan>("id_ID").RuleFor(o => tanggla)
-    // }
+    [HttpPost("auto")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
+    public async Task<ActionResult> CreateAktaPernikahanAuto()
+    {
+        await _repos.CraeteAktaPernikahanAuto();
+        return Ok();
+    }
 }

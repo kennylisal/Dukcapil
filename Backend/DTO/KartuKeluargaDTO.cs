@@ -19,4 +19,6 @@ public class KartuKeluargaDTO
     public required bool Is_active { get; set; }
 
     public required string Nik_kepala_keluarga { get; set; }
+
+    public IEnumerable<AnggotaKartuKeluargaDTO>? AnggotaKartuKeluargaDTOs { get; set; }
 }

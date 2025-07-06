@@ -60,7 +60,7 @@ public class KtpControlller : Controller
         }
         var orangPilihan = new Faker().PickRandom(listOrang);
 
-        var ktp = new DataGenerator().CreateKtpBasic(orangPilihan);
+        var ktp = DataGenerator.CreateKtpBasic(orangPilihan);
         var createStatus = await _repos.CreateKtp(ktp, orangPilihan.Nik);
         if (createStatus)
         {
