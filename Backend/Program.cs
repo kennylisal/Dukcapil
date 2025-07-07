@@ -1,3 +1,4 @@
+using Backend;
 using Backend.Data;
 using Backend.Interfaces;
 using Backend.Repository;
@@ -24,20 +25,31 @@ builder.Services.AddScoped<IAktaKelahiranRepos, AktaKelahiranRepos>();
 builder.Services.AddScoped<IKtpRepos, KtpRepos>();
 builder.Services.AddScoped<IAktaPernikahanRepos, AktaPernikahanRepos>();
 builder.Services.AddScoped<IKartuKeluargaRepos, KartuKeluargaRepos>();
-var app = builder.Build();
+builder.Services.AddScoped<DataSeeder>();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Check for --seed argument
+if (args.Contains("--seed"))
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    await SeederProgram.Main(args);
+}
+else
+{
+    // Normal Web API startup
+    var app = builder.Build();
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.MapControllers();
+
+    app.Run();
 }
 
-app.UseHttpsRedirection();
-
-app.MapControllers();
-
-app.Run();
+// Configure the HTTP request pipeline.
 
 // app.MapGet(
 //     "/test-db",

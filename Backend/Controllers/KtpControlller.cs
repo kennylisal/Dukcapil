@@ -47,6 +47,19 @@ public class KtpControlller : Controller
         return Ok(result);
     }
 
+    [HttpPost]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
+    public async Task<ActionResult> CreateKTP([FromBody] KtpDTO ktp, [FromBody] string nik)
+    {
+        var data = await _repos.CreateKtp(_mapper.Map<Ktp>(ktp), nik);
+        if (!data)
+        {
+            return StatusCode(500);
+        }
+        return Ok();
+    }
+
     [HttpPost("auto")]
     [ProducesResponseType(200)]
     [ProducesResponseType(200, Type = typeof(KtpDTO))]

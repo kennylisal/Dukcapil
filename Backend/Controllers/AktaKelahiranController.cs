@@ -31,6 +31,37 @@ public class AktaKelahiranController(
         return Ok(res);
     }
 
+    [HttpGet]
+    [ProducesResponseType(200, Type = typeof(AktaKelahiranDTO))]
+    [ProducesResponseType(500)]
+    public async Task<ActionResult> GetAktaKelahiran([FromBody] string Nik)
+    {
+        var res = _repos.GetAktaByNik(Nik);
+        if (res == null)
+        {
+            return StatusCode(500);
+        }
+        return Ok();
+    }
+
+    [HttpPost]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
+    public async Task<ActionResult> CreateAktaKelahiran(
+        [FromBody] AktaKelahiranDTO dTO,
+        [FromBody] string? nikIbu,
+        [FromBody] string? nikAyah
+    )
+    {
+        var akta_kelahiran = _mapper.Map<AktaKelahiran>(dTO);
+        var res = await _repos.CreateAkta(akta_kelahiran, nikIbu, nikAyah);
+        if (!res)
+        {
+            return StatusCode(500);
+        }
+        return Ok();
+    }
+
     [HttpPost("auto")]
     [ProducesResponseType(200, Type = typeof(AktaKelahiran))]
     [ProducesResponseType(500)]

@@ -5291,6 +5291,7 @@
       "Microsoft.AspNetCore.OpenApi >= 8.0.16",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.0",
       "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.6",
+      "Microsoft.Extensions.DependencyInjection >= 9.0.6",
       "Swashbuckle.AspNetCore >= 6.6.2"
     ]
   },
@@ -5359,6 +5360,10 @@
             "version": "[9.0.0, )"
           },
           "Microsoft.EntityFrameworkCore.SqlServer": {
+            "target": "Package",
+            "version": "[9.0.6, )"
+          },
+          "Microsoft.Extensions.DependencyInjection": {
             "target": "Package",
             "version": "[9.0.6, )"
           },
