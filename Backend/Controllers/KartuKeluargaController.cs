@@ -21,7 +21,7 @@ public class KartuKeluargaController(IKartuKeluargaRepos kartuKeluargaRepos, IMa
     [ProducesResponseType(500)]
     public async Task<ActionResult<IEnumerable<KartuKeluargaDTO>>> GetAllKartuKeluarga()
     {
-        var res = await _repos.GetAllKK();
+        var res = await _repos.GetAll();
 
         return Ok(_mapper.Map<IEnumerable<KartuKeluargaDTO>>(res));
     }
@@ -31,7 +31,7 @@ public class KartuKeluargaController(IKartuKeluargaRepos kartuKeluargaRepos, IMa
     [ProducesResponseType(500)]
     public async Task<ActionResult<IEnumerable<KartuKeluargaDTO>>> GetKartuKeluargaByid(string nokk)
     {
-        var res = await _repos.GetKartuKeluarga(nokk);
+        var res = await _repos.GetWithNoKK(nokk);
 
         return Ok(_mapper.Map<IEnumerable<KartuKeluargaDTO>>(res));
     }
@@ -47,7 +47,7 @@ public class KartuKeluargaController(IKartuKeluargaRepos kartuKeluargaRepos, IMa
         try
         {
             var KartuKeluarga = _mapper.Map<KartuKeluarga>(kartuKeluargaDTO);
-            await _repos.CreateKartuKeluarga(KartuKeluarga, Nik_kepala_keluarga);
+            await _repos.Create(KartuKeluarga, Nik_kepala_keluarga);
             return Ok();
         }
         catch (System.Exception e)

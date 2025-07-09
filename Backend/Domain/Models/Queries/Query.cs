@@ -2,12 +2,12 @@ using System;
 
 namespace Backend.Domain.Models.Queries;
 
-public class Query
+public class RequestQuery
 {
     public int Page { get; protected set; }
     public int ItemPerPage { get; protected set; }
 
-    public Query(int page, int itemPerPage)
+    public RequestQuery(int page, int itemPerPage)
     {
         Page = page;
         ItemPerPage = itemPerPage;

@@ -24,7 +24,7 @@ public class OrangController : Controller
     [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
     public async Task<ActionResult<ICollection<Orang>>> GetOrangs()
     {
-        var orangs = await _repos.GetOrangs();
+        var orangs = await _repos.GetAll();
         var result = _mapper.Map<List<OrangDTO>>(orangs);
         return Ok(result);
     }
@@ -34,7 +34,7 @@ public class OrangController : Controller
     [ProducesResponseType(400)]
     public async Task<ActionResult<Orang>> GetOrang(string nik)
     {
-        var orang = await _repos.GetOrang(nik);
+        var orang = await _repos.GetWithNik(nik);
         if (orang == null)
         {
             return NotFound();
@@ -55,7 +55,7 @@ public class OrangController : Controller
     [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
     public async Task<ActionResult<ICollection<Orang>>> GetOrangsWithName(string search)
     {
-        var orang = await _repos.GetOrangs(search);
+        var orang = await _repos.GetOrangsWithNama(search);
 
         return Ok(_mapper.Map<OrangDTO>(orang));
     }
@@ -71,7 +71,7 @@ public class OrangController : Controller
         }
 
         var orangMap = _mapper.Map<Orang>(orangCreate);
-        var createResult = await _repos.CreateOrang(orangMap);
+        var createResult = await _repos.Create(orangMap);
 
         if (!createResult)
         {
@@ -94,7 +94,7 @@ public class OrangController : Controller
 
         var res = DataGenerator.CreateOrangRandom();
 
-        var createResult = await _repos.CreateOrang(res);
+        var createResult = await _repos.Create(res);
         if (!createResult)
         {
             ModelState.AddModelError("", "Internal Error While Saving");
@@ -108,7 +108,7 @@ public class OrangController : Controller
     [ProducesResponseType(500)]
     public async Task<ActionResult<OrangDTO>> CreateOrangPercobaan()
     {
-        var res = await _repos.GetOrangTanpaAkta();
+        var res = await _repos.GetTanpaAkta();
 
         return Ok(_mapper.Map<List<OrangDTO>>(res));
     }
@@ -117,7 +117,7 @@ public class OrangController : Controller
     [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
     public async Task<ActionResult<OrangDTO>> GetOrangsTanpaKtp()
     {
-        var list = await _repos.GetOrangTanpaKtp();
+        var list = await _repos.GetTanpaKtp();
         var res = _mapper.Map<OrangDTO>(list);
         return Ok(res);
     }

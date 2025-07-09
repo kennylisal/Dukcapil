@@ -26,7 +26,7 @@ public class AktaKelahiranController(
     [ProducesResponseType(200, Type = typeof(IEnumerable<AktaKelahiranDTO>))]
     public async Task<ActionResult<ICollection<OrangDTO>>> GetOrangs()
     {
-        var aktas = await _repos.GetAktas();
+        var aktas = await _repos.GetAll();
         var res = _mapper.Map<List<AktaKelahiranDTO>>(aktas);
         return Ok(res);
     }
@@ -67,7 +67,7 @@ public class AktaKelahiranController(
     [ProducesResponseType(500)]
     public async Task<ActionResult<AktaKelahiran>> CreateOrangGenerated()
     {
-        var listOrang = await _orangRepos.GetOrangTanpaAkta();
+        var listOrang = await _orangRepos.GetTanpaAkta();
 
         if (listOrang.Count == 0)
         {

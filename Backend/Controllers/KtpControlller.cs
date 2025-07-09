@@ -28,7 +28,7 @@ public class KtpControlller : Controller
     [ProducesResponseType(200, Type = typeof(IEnumerable<KtpDTO>))]
     public async Task<ActionResult<ICollection<KtpDTO>>> getKtps()
     {
-        var ktps = await _repos.GetKtps();
+        var ktps = await _repos.GetAll();
         var result = _mapper.Map<List<KtpDTO>>(ktps);
         return Ok(result);
     }
@@ -38,7 +38,7 @@ public class KtpControlller : Controller
     [ProducesResponseType(404)]
     public async Task<ActionResult<KtpDTO>> getKtp(string nik)
     {
-        var ktps = await _repos.getKtpByNik(nik);
+        var ktps = await _repos.GetKtpWithNik(nik);
         if (ktps == null)
         {
             return NotFound();
@@ -66,7 +66,7 @@ public class KtpControlller : Controller
     [ProducesResponseType(500)]
     public async Task<ActionResult<KtpDTO>> CreateKtp()
     {
-        var listOrang = await _orangRepos.GetOrangTanpaKtp();
+        var listOrang = await _orangRepos.GetTanpaKtp();
         if (listOrang.Count == 0)
         {
             return Ok("No Data Available");
