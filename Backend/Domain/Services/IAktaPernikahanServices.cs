@@ -11,7 +11,7 @@ public interface IAktaPernikahanServices
 {
     Task<QueryResults<AktaPernikahan>> GetAll();
 
-    Task<AktaPernikahan> GetWithNik(SearchWithNIKQuery query);
+    Task<AktaPernikahan> GetWithNik(RequestQuery query);
 
     Task<ControllerResponse<AktaPernikahan>> Create(SaveAktaPernikahanDTO dto);
 

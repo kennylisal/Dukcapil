@@ -7,7 +7,7 @@ namespace Backend.Domain.Services;
 
 public interface IAnggotaKKServices
 {
-    Task<ControllerResponse<AnggotaKartuKeluarga>> Create(SaveAnggotaKKDTO dto);
+    Task<ControllerResponse<AnggotaKartuKeluarga>> Create(AnggotaKartuKeluarga akk);
 
-    Task<ControllerResponse<AnggotaKartuKeluarga>> Delete(DeleteRequestWithIdDTO dto);
+    Task<ControllerResponse<AnggotaKartuKeluarga>> Delete(AnggotaKartuKeluarga akk);
 }

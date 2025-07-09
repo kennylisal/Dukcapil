@@ -13,6 +13,9 @@ public class OrangQuery : RequestQuery
 
     public char? Kelamin { get; set; }
 
+    public OrangQuery()
+        : base() { }
+
     public OrangQuery(
         string? name,
         int? umur,

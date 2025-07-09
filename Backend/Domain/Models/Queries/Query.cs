@@ -7,10 +7,16 @@ public class RequestQuery
     public int Page { get; protected set; }
     public int ItemPerPage { get; protected set; }
 
-    public RequestQuery(int page, int itemPerPage)
+    public RequestQuery()
     {
-        Page = page;
-        ItemPerPage = itemPerPage;
+        Page = 1;
+        ItemPerPage = 20;
+    }
+
+    public RequestQuery(int? page, int? itemPerPage)
+    {
+        Page = page ?? 1;
+        ItemPerPage = itemPerPage ?? 10;
 
         if (page <= 0)
         {
@@ -18,7 +24,7 @@ public class RequestQuery
         }
         if (ItemPerPage <= 0)
         {
-            itemPerPage = 10;
+            ItemPerPage = 10;
         }
     }
 }

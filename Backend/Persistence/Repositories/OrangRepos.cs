@@ -61,7 +61,7 @@ public class OrangRepos(DataContext context) : BaseRepository(context), IOrangRe
 
     public async Task<Orang?> GetWithNik(string Nik)
     {
-        return await _context.Orang.FirstOrDefaultAsync(o => o.Nik == Nik);
+        return await _context.Orang.AsNoTracking().FirstOrDefaultAsync(o => o.Nik == Nik);
     }
 
     public void Update(Orang orang)

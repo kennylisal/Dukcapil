@@ -3,6 +3,8 @@ using Backend.Domain.Models.Queries;
 using Backend.Domain.Repositories;
 using Backend.Domain.Services;
 using Backend.Domain.Services.Communication;
+using Backend.DTO.Request;
+using Backend.Helper;
 using Backend.Interfaces;
 using Backend.Models;
 
@@ -27,20 +29,14 @@ public class OrangService : IOrangServices
 
     public async Task<ControllerResponse<Orang>> Create(Orang orang)
     {
-        try
+        string NikBaru = DataGenerator.GenerateNIK();
+        orang.Nik = NikBaru;
+        _orangRepos.Create(orang);
+        if (!await _unitOfWork.CompleteAsync())
         {
-            _orangRepos.Create(orang);
-            if (!await _unitOfWork.CompleteAsync())
-            {
-                return new ControllerResponse<Orang>("Terjadi Kesalahan ketika mau save orang");
-            }
-            return new ControllerResponse<Orang>(orang);
+            return new ControllerResponse<Orang>("Terjadi Kesalahan ketika mau save orang");
         }
-        catch (System.Exception ex)
-        {
-            _logger.LogError(ex, "Could not save product.");
-            return new ControllerResponse<Orang>($"Terjadi kesalahan Ketika Mau save {ex.Message}");
-        }
+        return new ControllerResponse<Orang>(orang);
     }
 
     public async Task<QueryResults<Orang>> GetAll(OrangQuery query)
@@ -55,27 +51,22 @@ public class OrangService : IOrangServices
         return result;
     }
 
-    public async Task<ControllerResponse<Orang>> Update(Orang orang)
+    public async Task<ControllerResponse<Orang>> Update(string nik, Orang orang)
     {
-        try
+        orang.Nik = nik;
+        var DataExist = await _orangRepos.GetWithNik(nik);
+        if (DataExist == null)
         {
-            var DataExist = await _orangRepos.GetWithNik(orang.Nik);
-            if (DataExist == null)
-            {
-                return new ControllerResponse<Orang>("Nik Orang tidak ditemukan");
-            }
-            _orangRepos.Update(orang);
-            if (!await _unitOfWork.CompleteAsync())
-            {
-                return new ControllerResponse<Orang>("Terjadi Kesalahan ketika mau save orang");
-            }
-            return new ControllerResponse<Orang>(orang);
-            //tanya soal update apakah perlu semua, termasuk akta"nya perlu ditambahkan
+            _logger.LogInformation("Nik orang tidak valid / tidak ditemukan");
+            // _logger.LogError(ex, "Could not save product.");
+            return new ControllerResponse<Orang>("Nik Orang tidak ditemukan");
         }
-        catch (System.Exception ex)
+
+        _orangRepos.Update(orang);
+        if (!await _unitOfWork.CompleteAsync())
         {
-            _logger.LogError(ex, "Could not save product.");
-            return new ControllerResponse<Orang>($"Terjadi kesalahan Ketika Mau save {ex.Message}");
+            return new ControllerResponse<Orang>("Terjadi Kesalahan ketika mau save orang");
         }
+        return new ControllerResponse<Orang>(orang);
     }
 }

@@ -1,7 +1,16 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Backend;
+using Backend.Controllers.Config;
 using Backend.Data;
+using Backend.Domain.Repositories;
+using Backend.Domain.Services;
+using Backend.Helper;
 using Backend.Interfaces;
+using Backend.Middlewares;
+using Backend.Persistence.Repositories;
 using Backend.Repository;
+using Backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,13 +27,34 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder
+    .Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory =
+            InvalidModelStateResponseFactory.ProduceErrorResponse;
+    });
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new KewarganegaraanConverter());
+    });
+
 //Urusan controller
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//repos
 builder.Services.AddScoped<IOrangRepos, OrangRepos>();
-builder.Services.AddScoped<IAktaKelahiranRepos, AktaKelahiranRepos>();
-builder.Services.AddScoped<IKtpRepos, KtpRepos>();
-builder.Services.AddScoped<IAktaPernikahanRepos, AktaPernikahanRepos>();
-builder.Services.AddScoped<IKartuKeluargaRepos, KartuKeluargaRepos>();
+builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
+
+//services
+builder.Services.AddScoped<IOrangServices, OrangService>();
+
+// builder.Services.AddScoped<IAktaKelahiranRepos, AktaKelahiranRepos>();
+// builder.Services.AddScoped<IKtpRepos, KtpRepos>();
+// builder.Services.AddScoped<IAktaPernikahanRepos, AktaPernikahanRepos>();
+// builder.Services.AddScoped<IKartuKeluargaRepos, KartuKeluargaRepos>();
 builder.Services.AddScoped<DataSeeder>();
 
 // Check for --seed argument
@@ -41,6 +71,7 @@ else
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+    app.UseMiddleware<ExceptionMiddleware>();
 
     app.UseHttpsRedirection();
 

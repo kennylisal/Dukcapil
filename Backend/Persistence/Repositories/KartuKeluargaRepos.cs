@@ -40,11 +40,15 @@ public class KartuKeluargaRepos(DataContext context) : BaseRepository(context), 
 
     public async Task<KartuKeluarga?> GetWithNoKK(string NoKK)
     {
-        return await _context.KartuKeluarga.FirstOrDefaultAsync(k => k.Nomor_KK == NoKK);
+        return await _context
+            .KartuKeluarga.AsNoTracking()
+            .FirstOrDefaultAsync(k => k.Nomor_KK == NoKK);
     }
 
     public void Update(KartuKeluarga kk)
     {
+        _context.Entry(kk).Property(kk => kk.Kepala_Keluarga).IsModified = false;
+        _context.Entry(kk).Property(kk => kk.AnggotaKartuKeluargas).IsModified = false;
         _context.KartuKeluarga.Update(kk);
     }
 }

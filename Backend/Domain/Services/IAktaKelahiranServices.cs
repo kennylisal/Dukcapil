@@ -9,11 +9,11 @@ namespace Backend.Domain.Services;
 
 public interface IAktaKelahiranServices
 {
-    Task<QueryResults<AktaKelahiran>> GetAll();
+    Task<QueryResults<AktaKelahiran>> GetAll(RequestQuery query);
 
-    Task<AktaKelahiran> GetWithNik(SearchWithNIKQuery query);
+    Task<AktaKelahiran?> GetWithNik(string nik);
 
-    Task<ControllerResponse<AktaKelahiran>> Create(SaveAktaKelahiranDTO dto);
+    Task<ControllerResponse<AktaKelahiran>> Create(AktaKelahiran dto);
 
-    Task<ControllerResponse<AktaKelahiran>> Update(AktaKelahiranDTO dto);
+    Task<ControllerResponse<AktaKelahiran>> Update(AktaKelahiran dto);
 }

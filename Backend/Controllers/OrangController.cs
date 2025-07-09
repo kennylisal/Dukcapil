@@ -1,124 +1,75 @@
 using AutoMapper;
+using Backend.Domain.Models.Queries;
+using Backend.Domain.Services;
+using Backend.Domain.Services.Communication;
 using Backend.DTO;
-using Backend.Helper;
-using Backend.Interfaces;
+using Backend.DTO.Request;
+using Backend.DTO.Response;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
 
 [Route("api/[controller]")]
+[Produces("application/json")]
 [ApiController]
 public class OrangController : Controller
 {
-    private readonly IOrangRepos _repos;
+    private readonly IOrangServices _services;
     private readonly IMapper _mapper;
 
-    public OrangController(IOrangRepos orangRepos, IMapper mapper)
+    public OrangController(IOrangServices services, IMapper mapper)
     {
-        _repos = orangRepos;
+        _services = services;
         _mapper = mapper;
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
-    public async Task<ActionResult<ICollection<Orang>>> GetOrangs()
+    [ProducesResponseType(200, Type = typeof(QueryResults<OrangDTO>))]
+    public async Task<ActionResult<QueryResults<OrangDTO>>> GetOrangs([FromQuery] OrangQuery query)
     {
-        var orangs = await _repos.GetAll();
-        var result = _mapper.Map<List<OrangDTO>>(orangs);
+        var orangs = await _services.GetAll(query);
+        var result = _mapper.Map<QueryResults<OrangDTO>>(orangs);
         return Ok(result);
     }
 
     [HttpGet("{nik}")]
     [ProducesResponseType(200, Type = typeof(OrangDTO))]
-    [ProducesResponseType(400)]
+    [ProducesResponseType(400, Type = typeof(ControllerResponse<Orang>))]
     public async Task<ActionResult<Orang>> GetOrang(string nik)
     {
-        var orang = await _repos.GetWithNik(nik);
+        var orang = await _services.GetOrang(nik);
         if (orang == null)
         {
-            return NotFound();
+            return BadRequest(new ControllerResponse<Orang>("Nik tidak ditemukan"));
         }
 
-        return Ok(_mapper.Map<OrangDTO>(orang));
-    }
-
-    [HttpGet("umur/{umur}")]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
-    public async Task<ActionResult<ICollection<Orang>>> GetOrangDiatasUmur(int umur)
-    {
-        var list = await _repos.GetOrangsDiatasUmur(umur);
-        return Ok(_mapper.Map<List<OrangDTO>>(list));
-    }
-
-    [HttpGet("search/{search}")]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
-    public async Task<ActionResult<ICollection<Orang>>> GetOrangsWithName(string search)
-    {
-        var orang = await _repos.GetOrangsWithNama(search);
-
-        return Ok(_mapper.Map<OrangDTO>(orang));
+        var res = _mapper.Map<OrangDTO>(orang);
+        return Ok(res);
     }
 
     [HttpPost]
-    [ProducesResponseType(204)]
-    [ProducesResponseType(400)]
-    public async Task<ActionResult> CreateOrang([FromBody] OrangDTO orangCreate)
+    [ProducesResponseType(204, Type = typeof(ControllerResponse<Orang>))]
+    // [ProducesResponseType(400, Type = typeof(ControllerResponse<Orang>))]
+    public async Task<ActionResult> CreateOrang([FromBody] SaveOrangDTO orangCreate)
     {
-        if (CreateOrang == null)
-        {
-            return BadRequest(ModelState);
-        }
+        var OrangBaru = _mapper.Map<Orang>(orangCreate);
+        var response = await _services.Create(OrangBaru);
 
-        var orangMap = _mapper.Map<Orang>(orangCreate);
-        var createResult = await _repos.Create(orangMap);
-
-        if (!createResult)
-        {
-            ModelState.AddModelError("", "Internal Error While Saving");
-            return StatusCode(500, ModelState);
-        }
-        return Ok("Success Create Orang");
+        return Ok(response);
     }
 
-    [HttpPost("auto")]
-    [ProducesResponseType(200, Type = typeof(OrangDTO))]
-    [ProducesResponseType(500)]
-    public async Task<ActionResult<OrangDTO>> CreateOrangGenerated()
+    [HttpPut("{nik}")]
+    [ProducesResponseType(204, Type = typeof(ControllerResponse<Orang>))]
+    [ProducesResponseType(400, Type = typeof(ControllerResponse<Orang>))]
+    public async Task<ActionResult> UpdateOrang(string nik, [FromBody] SaveOrangDTO orangCreate)
     {
-        if (_repos == null)
+        var OrangTarget = _mapper.Map<Orang>(orangCreate);
+        var response = await _services.Update(nik, OrangTarget);
+        if (!response.Success)
         {
-            Console.WriteLine("Repository is null!");
-            return StatusCode(500, "Repository not initialized.");
+            return new BadRequestObjectResult(new ControllerErrorResponse(response.Message));
         }
-
-        var res = DataGenerator.CreateOrangRandom();
-
-        var createResult = await _repos.Create(res);
-        if (!createResult)
-        {
-            ModelState.AddModelError("", "Internal Error While Saving");
-            return StatusCode(500, ModelState);
-        }
-        return Ok(_mapper.Map<OrangDTO>(res));
-    }
-
-    [HttpGet("tanpaAkta")]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
-    [ProducesResponseType(500)]
-    public async Task<ActionResult<OrangDTO>> CreateOrangPercobaan()
-    {
-        var res = await _repos.GetTanpaAkta();
-
-        return Ok(_mapper.Map<List<OrangDTO>>(res));
-    }
-
-    [HttpGet("tanpaKtp")]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<OrangDTO>))]
-    public async Task<ActionResult<OrangDTO>> GetOrangsTanpaKtp()
-    {
-        var list = await _repos.GetTanpaKtp();
-        var res = _mapper.Map<OrangDTO>(list);
-        return Ok(res);
+        return Ok(response);
     }
 }

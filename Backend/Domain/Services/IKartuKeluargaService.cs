@@ -8,11 +8,11 @@ namespace Backend.Domain.Services;
 
 public interface IKartuKeluargaService
 {
-    Task<QueryResults<KartuKeluarga>> GetAll();
+    Task<QueryResults<KartuKeluarga>> GetAll(KartuKeluargaQuery query);
 
-    Task<KartuKeluarga> GetWithNoKK(KartuKeluargaNoQuery query);
+    Task<KartuKeluarga?> GetWithNoKK(string noKK);
 
-    Task<ControllerResponse<KartuKeluarga>> Craete(SaveKartuKeluargaDTO dto);
+    Task<ControllerResponse<KartuKeluarga>> Craete(KartuKeluarga kartuKeluarga);
 
-    Task<ControllerResponse<KartuKeluarga>> Update(UpdateKartuKeluargaDTO dto);
+    Task<ControllerResponse<KartuKeluarga>> Update(KartuKeluarga kartuKeluarga);
 }

@@ -9,11 +9,11 @@ namespace Backend.Domain.Services;
 
 public interface IKtpServices
 {
-    Task<QueryResults<Ktp>> GetAll();
+    Task<QueryResults<Ktp>> GetAll(KtpQuery query);
 
-    Task<QueryResults<Ktp>> GetKtpWithNik(SearchWithNIKQuery query);
+    Task<Ktp?> GetKtpWithNik(string nik);
 
-    Task<ControllerResponse<Ktp>> Create(SaveKtpDTO dto);
+    Task<ControllerResponse<Ktp>> Create(Ktp ktp, string Nik);
 
-    Task<ControllerResponse<Ktp>> Update(KtpDTO dto);
+    Task<ControllerResponse<Ktp>> Update(Ktp ktp);
 }

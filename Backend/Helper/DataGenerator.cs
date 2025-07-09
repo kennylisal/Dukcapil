@@ -12,6 +12,11 @@ public static class DataGenerator
         L,
     }
 
+    public static string GenerateNIK()
+    {
+        return new Faker().Random.Replace("################");
+    }
+
     public static Orang CreateOrangRandom()
     {
         var seed = new Faker<Orang>("id_ID")

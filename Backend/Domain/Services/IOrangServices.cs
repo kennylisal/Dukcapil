@@ -9,9 +9,9 @@ public interface IOrangServices
 {
     Task<QueryResults<Orang>> GetAll(OrangQuery query);
 
-    Task<Orang> GetOrang(string Nik);
+    Task<Orang?> GetOrang(string Nik);
 
     Task<ControllerResponse<Orang>> Create(Orang orang);
 
-    Task<ControllerResponse<Orang>> Update(Orang orang);
+    Task<ControllerResponse<Orang>> Update(string nik, Orang orang);
 }

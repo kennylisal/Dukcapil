@@ -1,11 +1,15 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace Backend.Models;
 
 public enum Kewarganegaraan
 {
+    [EnumMember(Value = "WNI")]
     WNI,
+
+    [EnumMember(Value = "WNA")]
     WNA,
 }
 
