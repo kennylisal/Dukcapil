@@ -20,9 +20,9 @@ public class AktaPernikahanRepos(DataContext context)
 
     public async Task<AktaPernikahan?> GetAktaWithOneOfNik(string nik)
     {
-        return await _context.AktaPernikahans.FirstOrDefaultAsync(ak =>
-            ak.Nik_istri == nik || ak.Nik_suami == nik
-        );
+        return await _context
+            .AktaPernikahans.AsNoTracking()
+            .FirstOrDefaultAsync(ak => ak.Nik_istri == nik || ak.Nik_suami == nik);
     }
 
     public async Task<QueryResults<AktaPernikahan>> GetAll(RequestQuery query)

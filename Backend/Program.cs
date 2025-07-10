@@ -46,18 +46,24 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //repos
 builder.Services.AddScoped<IOrangRepos, OrangRepos>();
+builder.Services.AddScoped<IAktaKelahiranRepos, AktaKelahiranRepos>();
+builder.Services.AddScoped<IKtpRepos, KtpRepos>();
+builder.Services.AddScoped<IAktaPernikahanRepos, AktaPernikahanRepos>();
+builder.Services.AddScoped<IKartuKeluargaRepos, KartuKeluargaRepos>();
+builder.Services.AddScoped<IAnggotaKKRepos, AnggotaKKrepos>();
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
 
 //services
 builder.Services.AddScoped<IOrangServices, OrangService>();
+builder.Services.AddScoped<IAktaKelahiranServices, AktaKelahiranService>();
+builder.Services.AddScoped<IKtpServices, KtpService>();
+builder.Services.AddScoped<IAktaPernikahanServices, AktaPernikahanServices>();
+builder.Services.AddScoped<IKartuKeluargaService, KartuKeluargaService>();
+builder.Services.AddScoped<IAnggotaKKServices, AnggotaKKService>();
 
-// builder.Services.AddScoped<IAktaKelahiranRepos, AktaKelahiranRepos>();
-// builder.Services.AddScoped<IKtpRepos, KtpRepos>();
-// builder.Services.AddScoped<IAktaPernikahanRepos, AktaPernikahanRepos>();
-// builder.Services.AddScoped<IKartuKeluargaRepos, KartuKeluargaRepos>();
 builder.Services.AddScoped<DataSeeder>();
 
-// Check for --seed argument
+// untuk seeding
 if (args.Contains("--seed"))
 {
     await SeederProgram.Main(args);
@@ -80,7 +86,6 @@ else
     app.Run();
 }
 
-// Configure the HTTP request pipeline.
 
 // app.MapGet(
 //     "/test-db",

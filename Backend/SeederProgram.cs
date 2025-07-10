@@ -27,7 +27,7 @@ public static class SeederProgram
         }
         else if (!args.Contains("--seed"))
         {
-            Console.WriteLine("Use: dotnet run --project YourProject -- --seed <count>");
+            Console.WriteLine("Use: dotnet run --seed <count>");
             return;
         }
 

@@ -20,5 +20,5 @@ public class KartuKeluargaDTO
 
     public required string Nik_kepala_keluarga { get; set; }
 
-    public IEnumerable<AnggotaKartuKeluargaDTO>? AnggotaKartuKeluargaDTOs { get; set; }
+    public ICollection<AnggotaKartuKeluargaDTO>? AnggotaKartuKeluargas { get; set; }
 }

@@ -3,6 +3,7 @@ using Backend.Domain.Models.Queries;
 using Backend.Domain.Repositories;
 using Backend.Domain.Services;
 using Backend.Domain.Services.Communication;
+using Backend.Helper;
 using Backend.Interfaces;
 using Backend.Models;
 
@@ -39,7 +40,9 @@ public class KartuKeluargaService : IKartuKeluargaService
             );
             ;
         }
-        kartuKeluarga.Kepala_Keluarga = kepalakeluarga;
+        // kartuKeluarga.Kepala_Keluarga = kepalakeluarga;
+        var NoKKBaru = DataGenerator.GenerateNIK();
+        kartuKeluarga.Nomor_KK = NoKKBaru;
         _repos.Create(kartuKeluarga);
         return await _unitOfWork.CompleteAsync<KartuKeluarga>(
             "Create",

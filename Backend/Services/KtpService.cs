@@ -38,7 +38,7 @@ public class KtpService : IKtpServices
             return new ControllerResponse<Ktp>("Nik Orang tidakditemukan");
         }
         ktp.Nik = Nik;
-        ktp.Orang = orang;
+        // ktp.Orang = orang;
 
         _repos.Create(ktp);
         if (!await _unitOfWork.CompleteAsync())

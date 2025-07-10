@@ -49,8 +49,6 @@ public class AnggotaKKService : IAnggotaKKServices
                 "No Kartu Keluarga tidak valid / tidak ditemukan"
             );
         }
-        akk.Orang = check;
-        akk.KartuKeluarga = kk;
         _repos.Create(akk);
         return await _unitOfWork.CompleteAsync<AnggotaKartuKeluarga>(
             "Create",

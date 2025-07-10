@@ -56,20 +56,23 @@ public class OrangController : Controller
         var OrangBaru = _mapper.Map<Orang>(orangCreate);
         var response = await _services.Create(OrangBaru);
 
-        return Ok(response);
+        return Ok(_mapper.Map<ControllerResponse<OrangDTO>>(response));
     }
 
     [HttpPut("{nik}")]
-    [ProducesResponseType(204, Type = typeof(ControllerResponse<Orang>))]
-    [ProducesResponseType(400, Type = typeof(ControllerResponse<Orang>))]
+    [ProducesResponseType(204, Type = typeof(ControllerResponse<OrangDTO>))]
+    [ProducesResponseType(400, Type = typeof(ControllerResponse<OrangDTO>))]
     public async Task<ActionResult> UpdateOrang(string nik, [FromBody] SaveOrangDTO orangCreate)
     {
         var OrangTarget = _mapper.Map<Orang>(orangCreate);
         var response = await _services.Update(nik, OrangTarget);
+
         if (!response.Success)
         {
-            return new BadRequestObjectResult(new ControllerErrorResponse(response.Message));
+            return new BadRequestObjectResult(response);
         }
-        return Ok(response);
+
+        var result = _mapper.Map<ControllerResponse<OrangDTO>>(response);
+        return Ok(result);
     }
 }

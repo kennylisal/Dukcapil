@@ -4,8 +4,8 @@ namespace Backend.Domain.Models.Queries;
 
 public class RequestQuery
 {
-    public int Page { get; protected set; }
-    public int ItemPerPage { get; protected set; }
+    public int Page { get; set; }
+    public int ItemPerPage { get; set; }
 
     public RequestQuery()
     {

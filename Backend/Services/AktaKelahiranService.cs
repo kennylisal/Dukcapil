@@ -38,20 +38,20 @@ public class AktaKelahiranService : IAktaKelahiranServices
         {
             return new ControllerResponse<AktaKelahiran>("Nik orang tidak valid");
         }
-        dto.Orang = orang;
+        // dto.Orang = orang;
 
         if (dto.NikAyah != null)
         {
             var ayah = await _orangRepos.GetWithNik(dto.NikAyah);
-            dto.Ayah = ayah;
+            // dto.Ayah = ayah;
         }
         if (dto.NikIbu != null)
         {
             var ibu = await _orangRepos.GetWithNik(dto.NikIbu);
-            dto.Ibu = ibu;
+            // dto.Ibu = ibu;
         }
         _repos.Create(dto);
-        return await _unitOfWork.CompleteAsync<AktaKelahiran>("Create", "Akta_Kelahiran", dto);
+        return await _unitOfWork.CompleteAsync("Create", "Akta_Kelahiran", dto);
     }
 
     public async Task<QueryResults<AktaKelahiran>> GetAll(RequestQuery query)
@@ -73,17 +73,17 @@ public class AktaKelahiranService : IAktaKelahiranServices
         {
             return new ControllerResponse<AktaKelahiran>("Nik orang tidak valid");
         }
-        dto.Orang = orang;
+        // dto.Orang = orang;
 
         if (dto.NikAyah != null)
         {
             var ayah = await _orangRepos.GetWithNik(dto.NikAyah);
-            dto.Ayah = ayah;
+            // dto.Ayah = ayah;
         }
         if (dto.NikIbu != null)
         {
             var ibu = await _orangRepos.GetWithNik(dto.NikIbu);
-            dto.Ibu = ibu;
+            // dto.Ibu = ibu;
         }
         _repos.Update(dto);
         if (!await _unitOfWork.CompleteAsync())

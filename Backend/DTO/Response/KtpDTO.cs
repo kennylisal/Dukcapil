@@ -28,4 +28,6 @@ public class KtpDTO
 
     [Required]
     public required DateOnly Tanggal_penerbitan { get; set; }
+
+    public OrangDTO? Orang { get; set; }
 }

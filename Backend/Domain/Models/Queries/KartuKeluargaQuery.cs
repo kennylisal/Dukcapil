@@ -7,6 +7,9 @@ public class KartuKeluargaQuery : RequestQuery
     public string? Provinsi { get; set; }
     public string? Kota { get; set; }
 
+    public KartuKeluargaQuery()
+        : base() { }
+
     public KartuKeluargaQuery(
         string? provinsi,
         string? kota,

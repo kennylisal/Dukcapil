@@ -1,89 +1,67 @@
-// using System;
-// using AutoMapper;
-// using Backend.DTO;
-// using Backend.Helper;
-// using Backend.Interfaces;
-// using Backend.Models;
-// using Bogus;
-// using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using Backend.Domain.Models.Queries;
+using Backend.Domain.Services;
+using Backend.DTO;
+using Backend.DTO.Request;
+using Backend.Models;
+using Microsoft.AspNetCore.Mvc;
 
-// namespace Backend.Controllers;
+namespace Backend.Controllers;
 
-// [Route("api/[controller]")]
-// [ApiController]
-// public class AktaKelahiranController(
-//     IAktaKelahiranRepos repos,
-//     IOrangRepos orangRepos,
-//     IMapper mapper
-// ) : Controller
-// {
-//     private readonly IAktaKelahiranRepos _repos = repos;
-//     private readonly IMapper _mapper = mapper;
+[Route("api/[controller]")]
+[Produces("application/json")]
+[ApiController]
+public class AktaKelahiranController(IAktaKelahiranServices services, IMapper mapper) : Controller
+{
+    private readonly IAktaKelahiranServices _service = services;
+    private readonly IMapper _mapper = mapper;
 
-//     private readonly IOrangRepos _orangRepos = orangRepos;
+    [HttpGet]
+    [ProducesResponseType(200, Type = typeof(QueryResults<AktaKelahiranDTO>))]
+    public async Task<ActionResult<QueryResults<OrangDTO>>> GetOrangs(
+        [FromQuery] RequestQuery query
+    )
+    {
+        var aktas = await _service.GetAll(query);
+        var res = _mapper.Map<QueryResults<AktaKelahiranDTO>>(aktas);
+        return Ok(res);
+    }
 
-//     [HttpGet]
-//     [ProducesResponseType(200, Type = typeof(IEnumerable<AktaKelahiranDTO>))]
-//     public async Task<ActionResult<ICollection<OrangDTO>>> GetOrangs()
-//     {
-//         var aktas = await _repos.GetAll();
-//         var res = _mapper.Map<List<AktaKelahiranDTO>>(aktas);
-//         return Ok(res);
-//     }
+    [HttpGet("{nik}")]
+    [ProducesResponseType(200, Type = typeof(QueryResults<AktaKelahiranDTO>))]
+    public async Task<ActionResult<OrangDTO>> GetOrangWithNik(string nik)
+    {
+        var akta = await _service.GetWithNik(nik);
+        if (akta == null)
+            return BadRequest("Nik tidak valid / tidak ditemukan");
 
-//     [HttpGet]
-//     [ProducesResponseType(200, Type = typeof(AktaKelahiranDTO))]
-//     [ProducesResponseType(500)]
-//     public async Task<ActionResult> GetAktaKelahiran([FromBody] string Nik)
-//     {
-//         var res = _repos.GetAktaByNik(Nik);
-//         if (res == null)
-//         {
-//             return StatusCode(500);
-//         }
-//         return Ok();
-//     }
+        var result = _mapper.Map<AktaKelahiranDTO>(akta);
+        return new OkObjectResult(result);
+    }
 
-//     [HttpPost]
-//     [ProducesResponseType(200)]
-//     [ProducesResponseType(500)]
-//     public async Task<ActionResult> CreateAktaKelahiran(
-//         [FromBody] AktaKelahiranDTO dTO,
-//         [FromBody] string? nikIbu,
-//         [FromBody] string? nikAyah
-//     )
-//     {
-//         var akta_kelahiran = _mapper.Map<AktaKelahiran>(dTO);
-//         var res = await _repos.CreateAkta(akta_kelahiran, nikIbu, nikAyah);
-//         if (!res)
-//         {
-//             return StatusCode(500);
-//         }
-//         return Ok();
-//     }
+    [HttpPost]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult> CreateAktaKelahiran([FromBody] SaveAktaKelahiranDTO dto)
+    {
+        var dataBaru = _mapper.Map<AktaKelahiran>(dto);
+        var res = await _service.Create(dataBaru);
+        if (!res.Success)
+        {
+            return new BadRequestObjectResult(res);
+        }
+        return new OkObjectResult(res);
+    }
 
-//     [HttpPost("auto")]
-//     [ProducesResponseType(200, Type = typeof(AktaKelahiran))]
-//     [ProducesResponseType(500)]
-//     public async Task<ActionResult<AktaKelahiran>> CreateOrangGenerated()
-//     {
-//         var listOrang = await _orangRepos.GetTanpaAkta();
-
-//         if (listOrang.Count == 0)
-//         {
-//             return StatusCode(500);
-//         }
-
-//         var orangPilihan = new Faker().PickRandom(listOrang);
-
-//         var res = DataGenerator.CreateAktaKelahiranBasic(orangPilihan);
-
-//         var createResult = await _repos.CreateAkta(res, null, null);
-//         if (!createResult)
-//         {
-//             return StatusCode(500);
-//         }
-
-//         return Ok(_mapper.Map<AktaKelahiranDTO>(res));
-//     }
-// }
+    [HttpPut]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult> UpdateAktaKelahiran([FromBody] AktaKelahiranDTO dto)
+    {
+        var dataTarget = _mapper.Map<AktaKelahiran>(dto);
+        var res = await _service.Update(dataTarget);
+        if (!res.Success)
+            return new BadRequestObjectResult(res);
+        return new OkObjectResult(res);
+    }
+}

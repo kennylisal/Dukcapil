@@ -19,7 +19,9 @@ public class KartuKeluargaRepos(DataContext context) : BaseRepository(context), 
 
     public async Task<QueryResults<KartuKeluarga>> GetAll(KartuKeluargaQuery query)
     {
-        IQueryable<KartuKeluarga> queryable = _context.KartuKeluarga.AsNoTracking();
+        IQueryable<KartuKeluarga> queryable = _context
+            .KartuKeluarga.Include(kk => kk.AnggotaKartuKeluargas)
+            .AsNoTracking();
 
         if (query.Kota != null)
         {
@@ -42,6 +44,7 @@ public class KartuKeluargaRepos(DataContext context) : BaseRepository(context), 
     {
         return await _context
             .KartuKeluarga.AsNoTracking()
+            .Include(kk => kk.AnggotaKartuKeluargas)
             .FirstOrDefaultAsync(k => k.Nomor_KK == NoKK);
     }
 
