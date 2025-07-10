@@ -77,9 +77,9 @@ Here are the list of steps to build all the features and finish the project
 
 
 <a id="tabel-dokumen"></a>
-### Diagram Database
-
+### Database Diagram
+![Diagram](https://raw.githubusercontent.com/kennylisal/Dukcapil/refs/heads/master/image/db-diagram.png)
 ### Contact me
-Email : kennylisal5@gmail.com
+Email : kennylisal5@gmail.com <br>
 Linkedin : https://www.linkedin.com/in/kenny-handy-lisal/
 
