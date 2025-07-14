@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\c#\\Dukcapil-v1\\Backend\\Backend.csproj": {}
+    "D:\\c-sharp\\Dukcapil-v1\\Backend\\Backend.csproj": {}
   },
   "projects": {
-    "D:\\c#\\Dukcapil-v1\\Backend\\Backend.csproj": {
+    "D:\\c-sharp\\Dukcapil-v1\\Backend\\Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\c#\\Dukcapil-v1\\Backend\\Backend.csproj",
+        "projectUniqueName": "D:\\c-sharp\\Dukcapil-v1\\Backend\\Backend.csproj",
         "projectName": "Backend",
-        "projectPath": "D:\\c#\\Dukcapil-v1\\Backend\\Backend.csproj",
+        "projectPath": "D:\\c-sharp\\Dukcapil-v1\\Backend\\Backend.csproj",
         "packagesPath": "C:\\Users\\kenny\\.nuget\\packages\\",
-        "outputPath": "D:\\c#\\Dukcapil-v1\\Backend\\obj\\",
+        "outputPath": "D:\\c-sharp\\Dukcapil-v1\\Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\kenny\\AppData\\Roaming\\NuGet\\NuGet.Config"
