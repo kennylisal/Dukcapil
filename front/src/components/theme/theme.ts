@@ -6,6 +6,7 @@ import {
 import { appTheme } from "./app-theme/appTheme.ts";
 import { shadTheme } from "./shad-theme/shadTheme.ts";
 import { cyberpunkTheme } from "./cyberpunk-theme/cyberpunkTheme.ts";
+import { ukrTheme } from "./ukraine-theme/ukraine-theme.ts";
 
 type FoxTheme = Omit<Theme, "components">;
 
@@ -31,6 +32,7 @@ const themeMap: { [key: string]: (mode: "light" | "dark") => FoxTheme } = {
   appTheme,
   shadTheme,
   cyberpunkTheme,
+  ukrTheme,
 };
 
 export const getThemeByName = (theme: string, mode: "light" | "dark") => {

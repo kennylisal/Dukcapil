@@ -5,7 +5,7 @@ import { ukraineshad } from "./shadows";
 const background = "#1a1c1f"; // Slightly adjusted for yellow-blue theme
 const bodyBackground = "#121416"; // Darker tone to complement yellow
 
-export const appTheme = (mode: "light" | "dark") => {
+export const ukrTheme = (mode: "light" | "dark") => {
   const isDarkMode = mode === "dark";
 
   return createTheme({

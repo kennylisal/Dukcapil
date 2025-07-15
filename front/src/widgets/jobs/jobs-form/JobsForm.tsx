@@ -1,16 +1,59 @@
-import { useState } from "react";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Icon from "@mui/material/Icon";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid2";
-import Stack from "@mui/material/Stack";
-import { Span } from "../../Typography";
+import {
+  Button,
+  Card,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Icon,
+  Radio,
+  RadioGroup,
+  Stack,
+  styled,
+  TextField,
+} from "@mui/material";
+import { useState, type ReactNode } from "react";
+import { Span } from "../../../components/Typography";
 
-const SimpleForm = () => {
+// interface JobsFormProps {
+//   defaultValues?: JobsFormSchema;
+//   formRef?: React.MutableRefObject<HTMLFormElement | null>;
+//   onSubmit: (data: JobsFormSchema) => void;
+// }
+
+const CardRoot = styled(Card)({
+  height: "100%",
+  padding: "20px 24px",
+  ".subtitle": { marginBottom: "1rem" },
+});
+
+interface CardTitleProps {
+  subtitle?: string;
+}
+
+const CardTitle = styled("div")<CardTitleProps>(({ subtitle }) => ({
+  fontSize: "1rem",
+  fontWeight: 500,
+  textTransform: "capitalize",
+  marginBottom: !subtitle ? "16px" : undefined,
+}));
+
+interface SimpleCardProps {
+  children?: ReactNode;
+  title?: string;
+  subtitle?: string;
+}
+
+function SimpleCard({ children, title, subtitle }: SimpleCardProps) {
+  return (
+    <CardRoot elevation={6}>
+      <CardTitle subtitle={subtitle}>{title}</CardTitle>
+      {subtitle && <div className="subtitle">{subtitle}</div>}
+      {children}
+    </CardRoot>
+  );
+}
+
+const FormTest = () => {
   const [state, setState] = useState({
     email: "",
     mobile: "",
@@ -19,22 +62,28 @@ const SimpleForm = () => {
     password: "",
     firstName: "",
     creditCard: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
-
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     console.log("submitted");
     console.log(event);
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.persist();
+
     setState({ ...state, [event.target.name]: event.target.value });
   };
-
-  const { username, firstName, creditCard, mobile, password, confirmPassword, gender, email } =
-    state;
-
+  const {
+    username,
+    firstName,
+    creditCard,
+    mobile,
+    password,
+    confirmPassword,
+    gender,
+    email,
+  } = state;
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -107,7 +156,12 @@ const SimpleForm = () => {
                 value={confirmPassword}
               />
 
-              <RadioGroup row name="gender" value={gender} onChange={handleChange}>
+              <RadioGroup
+                row
+                name="gender"
+                value={gender}
+                onChange={handleChange}
+              >
                 <FormControlLabel
                   value="Male"
                   label="Male"
@@ -147,4 +201,10 @@ const SimpleForm = () => {
   );
 };
 
-export default SimpleForm;
+const JobForm = () => (
+  <SimpleCard title="Simple Form">
+    <FormTest />
+  </SimpleCard>
+);
+
+export default JobForm;

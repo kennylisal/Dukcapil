@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import List from "@mui/material/List";
 import { NavigationItem } from "./components/navigation-item/NavigationItem";
 import {

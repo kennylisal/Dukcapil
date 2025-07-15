@@ -23,7 +23,9 @@ export function ThemeConfigurator({
   themeName,
 }: {
   setThemeName: React.Dispatch<
-    React.SetStateAction<"appTheme" | "shadTheme" | "cyberpunkTheme">
+    React.SetStateAction<
+      "appTheme" | "shadTheme" | "cyberpunkTheme" | "ukrTheme"
+    >
   >;
   themeName: string;
 }) {

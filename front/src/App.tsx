@@ -20,6 +20,10 @@ import { ColorModeContext } from "./context/ColorMode";
 import { SidebarLayout } from "./components/sidebar-layout/SidebarLayout";
 
 const Dashboard = React.lazy(() => import("./pages/dashboard/Dashboard"));
+const JobList = React.lazy(() => import("./pages/jobs/jobs-list/JobsListPage"));
+const JobCreate = React.lazy(
+  () => import("./pages/jobs/jobs-create/JobsCreate")
+);
 
 // const router = createBrowserRouter([
 //   {
@@ -60,8 +64,8 @@ const Dashboard = React.lazy(() => import("./pages/dashboard/Dashboard"));
 function App() {
   const [mode, setMode] = React.useState<"light" | "dark">("light");
   const [themeName, setThemeName] = useState<
-    "appTheme" | "shadTheme" | "cyberpunkTheme"
-  >("appTheme");
+    "appTheme" | "shadTheme" | "cyberpunkTheme" | "ukrTheme"
+  >("ukrTheme");
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {
@@ -79,7 +83,7 @@ function App() {
             <CssBaseline />
             <Analytics />
             <>
-              <Dashboard />
+              <JobCreate />
               <ThemeConfigurator
                 setThemeName={setThemeName}
                 themeName={themeName}
