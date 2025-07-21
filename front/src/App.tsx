@@ -18,6 +18,7 @@ import { Analytics } from "@mui/icons-material";
 import { ThemeConfigurator } from "./components/theme/ThemeConfigurator";
 import { ColorModeContext } from "./context/ColorMode";
 import { SidebarLayout } from "./components/sidebar-layout/SidebarLayout";
+import CreateOrangForm from "./pages/orang/orang-create";
 
 const Dashboard = React.lazy(() => import("./pages/dashboard/Dashboard"));
 const JobList = React.lazy(() => import("./pages/jobs/jobs-list/JobsListPage"));
@@ -83,7 +84,7 @@ function App() {
             <CssBaseline />
             <Analytics />
             <>
-              <JobCreate />
+              <JobList />
               <ThemeConfigurator
                 setThemeName={setThemeName}
                 themeName={themeName}
